@@ -1,0 +1,7 @@
+name = "esp32"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+routes = [
+  { pattern = "esp32.vaked.dev", custom_domain = true }
+]
