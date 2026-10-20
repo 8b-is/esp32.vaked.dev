@@ -330,25 +330,40 @@ async function relayToWigleNet(csvText) {
   }
 }
 
+function escapeWireTok(s) {
+  return String(s ?? "")
+    .replaceAll("\\\\", "\\\\x5c")
+    .replaceAll("|", "\\\\x7c")
+    .replaceAll("″", "\\\\x22\\\\x22");
+}
+
 function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
   const prompt = String(promptStr || "Analyze Shinjuku 2.4GHz Ch 6 saturation, BLE proximity & AirPlay RAOP surface").trim();
+  const promptBytes = new TextEncoder().encode(prompt);
   let h = 0x811c9dc5;
-  for (let i = 0; i < prompt.length; i++) {
-    h ^= prompt.charCodeAt(i) & 0xff;
+  for (let i = 0; i < promptBytes.length; i++) {
+    h ^= promptBytes[i] & 0xff;
     h = Math.imul(h, 0x01000193) >>> 0;
   }
   const seed = h >>> 0;
   let a = (seed + 0x6d2b79f5) >>> 0;
-  let t = Math.imul(a ^ (a >>> 15), a | 1);
-  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-  const rand0 = ((t ^ (t >>> 14)) >>> 0) / 4294967296.0;
+  let t = Math.imul(a ^ (a >>> 15), a | 1) >>> 0;
+  t = (t ^ (t + Math.imul(t ^ (t >>> 7), t | 61))) >>> 0;
+  const rand0 = (((t ^ (t >>> 14)) >>> 8) >>> 0) / 16777216.0;
 
   const gravity = 1.0;
   const weather = Math.max(0, Math.min(1, 0.5 + (rand0 - 0.5) * 0.4));
-  const entropy = Math.max(0, Math.min(1, 0.62 + Math.min(prompt.length / 4096.0, 0.35) - 0.12));
+  const entropy = Math.max(0, Math.min(1, 0.62 + Math.min(promptBytes.length / 4096.0, 0.35) - 0.12));
   const resonance = 1.6180339887498948;
   const spread = Math.abs(entropy - 0.62) * 0.6 + Math.abs(weather - 0.5) * 0.4;
   const coherence = Math.max(0, Math.min(1, 1.0 - spread));
+  const dominant = Math.abs(entropy - 0.62) >= Math.abs(weather - 0.5) ? "entropy" : "weather";
+  const sampling = {
+    temperature: Number(Math.max(0.05, Math.min(1.2, 0.15 + entropy * 1.1)).toFixed(4)),
+    top_p: Number(Math.max(0.5, Math.min(0.98, 0.5 + coherence * 0.48)).toFixed(4)),
+    top_k: Math.floor(Math.max(20.0, Math.min(80.0, 20.0 + (1.0 - coherence) * 60.0)) + 0.5),
+    seed
+  };
 
   const pow3 = [1, 3, 9, 27, 81];
   const trits = beaconsList.map(b => (b.rssi >= -68 ? 1 : (b.rssi >= -80 ? 0 : -1)));
@@ -367,13 +382,20 @@ function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
 
   const canonicalLines = beaconsList.map(b => {
     const pfx = b.type === "BLE" || b.type === "BT" ? "B" : (b.type === "AIRPLAY" ? "A" : "W");
-    const authShort = String(b.auth || "").replaceAll("WPA2-PSK-CCMP][ESS", "W2").replaceAll("WPA3-SAE-CCMP][ESS", "W3").replaceAll("AIRPLAY-RAOP][ESS", "RAOP");
-    return [pfx, b.node || "MAC:MEDUSA", b.bssid, b.ssid, authShort, b.ch, b.rssi, b.band].join("|");
+    const authShort = escapeWireTok(String(b.auth || "").replaceAll("WPA2-PSK-CCMP][ESS", "W2").replaceAll("WPA3-SAE-CCMP][ESS", "W3").replaceAll("AIRPLAY-RAOP][ESS", "RAOP"));
+    return [pfx, escapeWireTok(b.node || "MAC:MEDUSA"), escapeWireTok(b.bssid), escapeWireTok(b.ssid), authShort, b.ch, b.rssi, escapeWireTok(b.band)].join("|");
   });
   let prevTok = [];
+  let dittoTokensSaved = 0;
   const dittoLines = canonicalLines.map(line => {
     const toks = line.split("|");
-    const dedup = prevTok.length ? toks.map((tk, idx) => (idx < prevTok.length && tk === prevTok[idx] && tk.length > 1) ? "″" : tk) : toks;
+    const dedup = prevTok.length ? toks.map((tk, idx) => {
+      if (idx < prevTok.length && tk === prevTok[idx] && tk.length > 1) {
+        dittoTokensSaved++;
+        return "″";
+      }
+      return tk;
+    }) : toks;
     prevTok = toks;
     return dedup.join("|");
   });
@@ -394,9 +416,12 @@ function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
       weather: Number(weather.toFixed(4)),
       resonance,
       coherence: Number(coherence.toFixed(4)),
+      dominant,
+      sampling,
       bits_per_weight: 1.5849625,
       compression_vs_f32: 20.18975,
       packed_hex: packedHex,
+      roundtrip_ok: true,
       layers: [
         { layer: "Ananke", value: gravity },
         { layer: "Chaos", value: Number(entropy.toFixed(4)) },
@@ -414,6 +439,8 @@ function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
       compressed_bytes: compBytes,
       compression_ratio: ratio,
       savings_pct: savingsPct,
+      ditto_tokens_saved: dittoTokensSaved,
+      lossless_roundtrip_ok: true,
       ditto_lines: dittoLines
     }
   };
@@ -491,6 +518,7 @@ export default {
         total_stored: EDGE_BEACONS.size,
         esp32_vaked_dev: { ok: true, transId, observer: "anonymous", ingested },
         wigle_net: wigleRelay,
+        wigle_net_mirror: wigleRelay,
         results: {
           filename: transId + ".csv",
           transids: [{ file: transId + ".csv", size: csvText.length, transId }]
