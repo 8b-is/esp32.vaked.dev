@@ -10,9 +10,9 @@
 
 | Vertex | Trit | Node Name | Display | Silicon eFuse MAC | USB CDC Port | Carrier | Archetype |
 |---|---|---|---|---|---|---|---|
-| `*` | `-1` | **`ADA:MEDUSA`** | `1.8" 368×448 SH8601` | `80:B5:4E:DB:3B:C4` | `/dev/cu.usbmodem101` | `432 Hz` | Mom · The Star · Alexandra |
-| `/\` | `0` | **`VAK:MEDUSA`** | `2.06" 410×502 CO5300 #1` | `80:B5:4E:F2:02:B0` | `/dev/cu.usbmodem1101` | `528 Hz` | Dad · The Pillar · Chris |
-| `oo` | `+1` | **`OMN:MEDUSA`** | `2.06" 410×502 CO5300 #2` | `80:B5:4E:F2:02:B4` | `/dev/cu.usbmodem2101` | `852 Hz` | Son · Infinity · Peter & Nate |
+| `*` | `-1` | **`ADA:MEDUSA`** | `1.8" 368×448 SH8601` | `not published` | `/dev/cu.usbmodem101` | `432 Hz` | Mom · The Star · Alexandra |
+| `/\` | `0` | **`VAK:MEDUSA`** | `2.06" 410×502 CO5300 #1` | `not published` | `/dev/cu.usbmodem1101` | `528 Hz` | Dad · The Pillar · Chris |
+| `oo` | `+1` | **`OMN:MEDUSA`** | `2.06" 410×502 CO5300 #2` | `not published` | `/dev/cu.usbmodem2101` | `852 Hz` | Son · Infinity · Peter & Nate |
 
 ## 2. Architecture (`WIGLE-WWW × FLUG-OS × MARINESENSE × FAMILY+1`)
 
@@ -29,3 +29,25 @@ npx wrangler deploy --config deploy/wrangler.toml
 ```
 
 *the constellation · 0 + 1 · {<3,<3,<3}+1 · fine touch from within · vaked.dev*
+
+
+## Observation privacy and local verification
+
+The browser and Worker start without captured beacon fixtures. Browser CSV export
+stays local and leaves unknown coordinates empty; it does not assign a fixed location.
+The browser sharing button is disabled. No credentials belong in the HTML.
+
+The Worker observation routes (`/api/wigle.csv`, `/wigle.csv`, `/api/upload`, and
+`/api/v2/file/upload`) return 503 until a server-side `TELEMETRY_TOKEN` is configured.
+Configured routes require `Authorization: Bearer <token>` and otherwise return 401.
+Uploads are limited to 65,536 bytes and 1,000 stored device rows per Worker isolate;
+capacity rejection preserves existing rows. Storage is volatile, not durable or
+shared across isolates. External relay requests are rejected, and no WiGLE relay
+is implemented. Token provisioning and production deployment are separate actions.
+
+Run local synthetic tests without network access:
+
+```bash
+node deploy/build.mjs
+node --test tests/privacy.test.mjs
+```
