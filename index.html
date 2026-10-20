@@ -527,6 +527,10 @@ uv run --with pyserial python host/merge.py --ports /dev/cu.usbmodem1101 /dev/cu
     serialLog.scrollTop = serialLog.scrollHeight;
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[char]));
+  }
+
   function renderSpectrumAndTable() {
     const rows = Array.from(beacons.values()).sort((a, b) => b.rssi - a.rssi);
     const nWifi = rows.filter(r => (r.type || "WIFI") === "WIFI" && r.band !== "AirPlay").length;
@@ -537,10 +541,10 @@ uv run --with pyserial python host/merge.py --ports /dev/cu.usbmodem1101 /dev/cu
       const col = r.node.startsWith("ADA") ? "#ff6ac1" : (r.node.startsWith("VAK") ? "#00e5c9" : (r.node.startsWith("MAC") ? "#ffd700" : "#b48bff"));
       const badge = r.band || (r.type === "BLE" || r.type === "BT" ? r.type : (r.ch > 14 ? "5GHz" : "2.4GHz"));
       return `<tr>
-        <td style="color:${col};font-weight:600">${r.node.split(":")[0]} <span style="font-size:0.62rem;opacity:0.8">[${badge}]</span></td>
-        <td><code>${r.bssid}</code></td>
-        <td>${r.ssid || "<span style='color:#7f7c99'>(hidden)</span>"}</td>
-        <td>[${r.auth.replace(/^\[|\]$/g, "")}]</td>
+        <td style="color:${col};font-weight:600">${escapeHtml(r.node.split(":")[0])} <span style="font-size:0.62rem;opacity:0.8">[${escapeHtml(badge)}]</span></td>
+        <td><code>${escapeHtml(r.bssid)}</code></td>
+        <td>${escapeHtml(r.ssid) || "<span style='color:#7f7c99'>(hidden)</span>"}</td>
+        <td>[${escapeHtml(r.auth.replace(/^\[|\]$/g, ""))}]</td>
         <td>${r.ch}</td>
         <td style="color:${r.rssi > -70 ? '#00ff66' : (r.rssi > -82 ? '#ffd700' : '#a89ec9')}">${r.rssi} dBm</td>
       </tr>`;
@@ -582,14 +586,14 @@ uv run --with pyserial python host/merge.py --ports /dev/cu.usbmodem1101 /dev/cu
         const existing = beacons.get(bssid);
         if (!existing || b.rssi > existing.rssi) {
           beacons.set(bssid, {
-            node: b.node || rawNode || "MAC:MEDUSA",
+            node: String(b.node || rawNode || "MAC:MEDUSA"),
             bssid,
-            ssid: b.ssid || "",
-            auth: b.auth || "WPA2-PSK",
+            ssid: String(b.ssid || ""),
+            auth: String(b.auth || "WPA2-PSK"),
             ch: Number(b.channel || b.ch || 0),
             rssi: Number(b.rssi || -90),
             type: b.radioType || b.type || "WIFI",
-            band: b.band || "2.4GHz",
+            band: String(b.band || "2.4GHz"),
             seen: b.seen || new Date().toISOString().replace("T", " ").slice(0, 19)
           });
         }

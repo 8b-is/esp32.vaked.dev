@@ -49,5 +49,5 @@ Run local synthetic tests without network access:
 
 ```bash
 node deploy/build.mjs
-node --test tests/privacy.test.mjs
+node --test tests/*.test.mjs
 ```
