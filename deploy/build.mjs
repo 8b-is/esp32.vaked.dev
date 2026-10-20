@@ -18,7 +18,7 @@ const triadObj = {
   admissibility: {
     gate: "CT-000",
     legal_modules: ["CF/88 Art. 5 II, IX, XII", "LGPD Lei 13.709/2018 Art. 6 III", "CP Art. 154-A (Atipicidade)", "LGT Lei 9.472/1997 / ANATEL Res. 680/2017"],
-    radio_posture: "PASSIVE_STA_ONLY (zero association, zero injection, RAM-only scanDelete, anonymous donate=on)"
+    radio_posture: "PASSIVE_STA_ONLY (zero association, zero injection, RAM-only scanDelete, sharing disabled)"
   },
   crate_tracks: 20,
   muse_track: "17 · Left Hand Free (#1 Muse 💙) — alt-J (106 BPM)",
@@ -29,8 +29,6 @@ const triadObj = {
       trit: -1,
       archetype: "ROOT-ALEXANDRA",
       display: "1.8-inch 368x448 SH8601 QSPI",
-      mac: "80:B5:4E:DB:3B:C4",
-      port_hint: "/dev/cu.usbmodem101",
       freq_hz: 432,
       salience: 1.64,
       re_m: 842,
@@ -44,8 +42,6 @@ const triadObj = {
       trit: 0,
       archetype: "PILLAR-CHRIS",
       display: "2.06-inch 410x502 CO5300 QSPI #1",
-      mac: "80:B5:4E:F2:02:B0",
-      port_hint: "/dev/cu.usbmodem1101",
       freq_hz: 528,
       salience: 1.22,
       re_m: 1120,
@@ -59,8 +55,6 @@ const triadObj = {
       trit: 1,
       archetype: "INFINITY-PETER-NATE",
       display: "2.06-inch 410x502 CO5300 QSPI #2",
-      mac: "80:B5:4E:F2:02:B4",
-      port_hint: "/dev/cu.usbmodem2101",
       freq_hz: 852,
       salience: 1.38,
       re_m: 1280,
@@ -74,8 +68,6 @@ const triadObj = {
       trit: 0,
       archetype: "DARWIN-QUAD-SPECTRUM-APEX",
       display: "macOS Apple Silicon CoreWLAN + BLE + AirPlay",
-      mac: "BC:D0:74:31:B4:DA",
-      port_hint: "en0 + hci0 + mDNS",
       freq_hz: 432,
       salience: 1.67,
       re_m: 3514,
@@ -96,16 +88,8 @@ const OG = ${JSON.stringify(og)};
 const SITEMAP = ${JSON.stringify(sitemap)};
 const BASE_TRIAD = ${JSON.stringify(triadObj)};
 
-const EDGE_BEACONS = new Map([
-  ["C4:3C:EA:85:12:60", "C4:3C:EA:85:12:60,Buffalo-G-1260,[WPA2-PSK-CCMP][ESS],2026-10-20 08:43:44,6,-34,35.6895,139.6917,40,5,WIFI"],
-  ["C4:3C:EA:85:12:61", "C4:3C:EA:85:12:61,Buffalo-A-1260,[WPA2-PSK-CCMP][ESS],2026-10-20 08:43:44,116,-37,35.6895,139.6917,40,5,WIFI"],
-  ["92:94:05:8C:99:CE", "92:94:05:8C:99:CE,Lodri's MacBook Pro (MacBookPro18 3 · RAOP),[AIRPLAY-RAOP][ESS],2026-10-20 08:43:44,6,-54,35.6895,139.6917,40,5,WIFI"],
-  ["EE:C5:BB:CD:F5:36", "EE:C5:BB:CD:F5:36,MacBook (MacBookPro18 4 · RAOP),[AIRPLAY-RAOP][ESS],2026-10-20 08:43:44,6,-54,35.6895,139.6917,40,5,WIFI"],
-  ["B4:62:2E:B3:71:A7", "B4:62:2E:B3:71:A7,CPS01-QWVQ45,[WPA3-SAE-CCMP][ESS],2026-10-20 08:43:44,1,-65,35.6895,139.6917,40,5,WIFI"],
-  ["50:41:B9:36:D0:85", "50:41:B9:36:D0:85,IODATA-36d084-2G,[WPA2-PSK-CCMP][ESS],2026-10-20 08:43:44,9,-66,35.6895,139.6917,40,5,WIFI"],
-  ["2C:32:6A:C3:4A:91", "2C:32:6A:C3:4A:91,Alexandra's AirPods Pro - Find My [Headphones],[BT-CLASSIC][HEADPHONES],2026-10-20 08:43:44,0,-78,35.6895,139.6917,40,5,BT"],
-  ["2C:18:09:D8:14:74", "2C:18:09:D8:14:74,Christopher's AirPods Pro - Find My [Headphones],[BT-CLASSIC][HEADPHONES],2026-10-20 08:43:44,0,-79,35.6895,139.6917,40,5,BT"]
-]);
+// Public responses start empty; never embed captured device observations.
+const EDGE_BEACONS = new Map();
 let UPLOAD_SEQ = 0;
 
 const BASE_HEADERS = {
@@ -141,6 +125,7 @@ function extractCsvFromMultipartOrRaw(rawText) {
 function ingestCsvRows(csvText) {
   const lines = csvText.split(/\\r?\\n/);
   let count = 0;
+  const next = new Map(EDGE_BEACONS);
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("WigleWifi-") || trimmed.startsWith("MAC,SSID")) continue;
@@ -148,46 +133,54 @@ function ingestCsvRows(csvText) {
     if (firstComma > 0) {
       const mac = trimmed.slice(0, firstComma).trim().toUpperCase();
       if (mac.includes(":")) {
-        EDGE_BEACONS.set(mac, trimmed);
+        next.set(mac, trimmed);
+        if (next.size > 1000) throw new Error("row limit");
         count++;
       }
     }
   }
+  EDGE_BEACONS.clear();
+  for (const [key, value] of next) EDGE_BEACONS.set(key, value);
   return count;
 }
 
-async function relayToWigleNet(csvText) {
-  const boundary = "----WigleEdgeRelay8bIs" + Date.now();
-  const body =
-    "--" + boundary + "\\r\\n" +
-    'Content-Disposition: form-data; name="donate"\\r\\n\\r\\non\\r\\n' +
-    "--" + boundary + "\\r\\n" +
-    'Content-Disposition: form-data; name="file"; filename="wigle-triad-' + Date.now() + '.csv"\\r\\n' +
-    "Content-Type: text/csv\\r\\n\\r\\n" +
-    csvText + "\\r\\n" +
-    "--" + boundary + "--\\r\\n";
+async function readBoundedBody(request) {
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks = [];
+  let size = 0;
   try {
-    const r = await fetch("https://api.wigle.net/api/v2/file/upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data; boundary=" + boundary,
-        "Accept": "application/json",
-        "User-Agent": "WigleWifi-0.9.0 (esp32.vaked.dev; 8b-is; anonymous)"
-      },
-      body
-    });
-    const j = await r.json();
-    const tid = j?.results?.transids?.[0]?.transId || "wigle-" + Date.now();
-    return { ok: Boolean(j?.success), status: r.status, observer: j?.observer || "anonymous", transId: tid, raw: j };
-  } catch (e) {
-    return { ok: false, status: 502, observer: "anonymous", transId: "relay-err", error: String(e) };
-  }
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > 65536) { await reader.cancel(); throw new Error("body limit"); }
+      chunks.push(value);
+    }
+  } finally { reader.releaseLock(); }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  return new TextDecoder().decode(bytes);
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env = {}) {
     const url = new URL(request.url);
     const p = url.pathname;
+    const observationRoute = ["/api/wigle.csv", "/wigle.csv", "/api/upload", "/api/v2/file/upload"].includes(p);
+    if (observationRoute && request.method !== "OPTIONS") {
+      if (!env.TELEMETRY_TOKEN) {
+        return new Response("Observation sharing is disabled", { status: 503, headers: BASE_HEADERS });
+      }
+      if (request.headers.get("authorization") !== "Bearer " + env.TELEMETRY_TOKEN) {
+        return new Response("Unauthorized", { status: 401, headers: BASE_HEADERS });
+      }
+      if (url.searchParams.has("mirror")) {
+        return new Response("External relay is disabled", { status: 403, headers: BASE_HEADERS });
+      }
+    }
+
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
@@ -210,12 +203,13 @@ export default {
     }
     if (p === "/api/upload" || p === "/api/v2/file/upload") {
       if (request.method !== "POST") {
-        return new Response(JSON.stringify({ ok: true, endpoint: "https://esp32.vaked.dev/api/upload", observer: "anonymous", stored_beacons: EDGE_BEACONS.size }), {
+        return new Response(JSON.stringify({ ok: true, endpoint: "https://esp32.vaked.dev/api/upload", observer: "authenticated", stored_beacons: EDGE_BEACONS.size }), {
           headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
         });
       }
-      UPLOAD_SEQ++;
-      const rawBody = await request.text();
+      let rawBody;
+      try { rawBody = await readBoundedBody(request); }
+      catch { return new Response("Upload exceeds body limit", {status: 413, headers: BASE_HEADERS}); }
       let csvText = extractCsvFromMultipartOrRaw(rawBody);
       if (rawBody.trim().startsWith("{")) {
         try {
@@ -226,22 +220,21 @@ export default {
       if (!csvText.startsWith("WigleWifi-1.")) {
         csvText = "WigleWifi-1.4,appRelease=0.9.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n" + csvText;
       }
-      const ingested = ingestCsvRows(csvText);
+      let ingested;
+      try { ingested = ingestCsvRows(csvText); }
+      catch { return new Response("Upload exceeds row limit", {status: 413, headers: BASE_HEADERS}); }
+      UPLOAD_SEQ++;
       const transId = "esp32-vaked-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(UPLOAD_SEQ).padStart(5, "0");
-      let wigleRelay = null;
-      if (url.searchParams.get("mirror") === "wigle") {
-        wigleRelay = await relayToWigleNet(csvText);
-      }
       const resp = {
         success: true,
         ok: true,
-        observer: "anonymous",
-        donate: "on",
+        observer: "authenticated",
+        donate: "off",
         transId,
         ingested,
         total_stored: EDGE_BEACONS.size,
-        esp32_vaked_dev: { ok: true, transId, observer: "anonymous", ingested },
-        wigle_net: wigleRelay,
+        esp32_vaked_dev: { ok: true, transId, observer: "authenticated", ingested },
+        wigle_net: null,
         results: {
           filename: transId + ".csv",
           transids: [{ file: transId + ".csv", size: csvText.length, transId }]
@@ -254,10 +247,10 @@ export default {
     if (p === "/api/triad.json" || p === "/triad.json") {
       const payload = {
         ...BASE_TRIAD,
-        anonymous_upload_endpoint: "https://esp32.vaked.dev/api/upload",
+        authenticated_upload_endpoint: "https://esp32.vaked.dev/api/upload",
         wigle_csv_endpoint: "https://esp32.vaked.dev/api/wigle.csv",
-        stored_beacons_count: EDGE_BEACONS.size,
-        uploads_count: UPLOAD_SEQ
+        observation_authentication: "Bearer token required",
+        external_relay: "disabled"
       };
       return new Response(JSON.stringify(payload, null, 2), { headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" } });
     }
