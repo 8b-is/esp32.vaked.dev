@@ -6,6 +6,7 @@
 **Kompress-Ultra v16.2.0 API:** [https://esp32.vaked.dev/api/kompress](https://esp32.vaked.dev/api/kompress)  
 **Service Worker (`Offline-First PWA`):** [https://esp32.vaked.dev/sw.js](https://esp32.vaked.dev/sw.js)  
 **GitHub (`HYPER-CHARM-KARMA`):** `HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter`  
+**Sovereign Library Ontology (`ONTOLOGY.md`):** [https://github.com/8b-is/sovereign-library/blob/main/ONTOLOGY.md](https://github.com/8b-is/sovereign-library/blob/main/ONTOLOGY.md) · [Pocoo OMNI Book (`dragon-ball-sovereign-ontology-omni`)](https://pocoo.vaked.dev/demos/book/dragon-ball-sovereign-ontology-omni.html) · [`8b-is/fandom-mcp`](https://github.com/8b-is/fandom-mcp)  
 **Firmware & Local Web Bridge:** `flug-os/` (`v2.0.0+offline-alexai-kompress`) + `wigle-triad/` (`host/wiglewww.py` + `www/index.html` + `macos/wigle-macos.swift` + `android/`)
 
 ---
