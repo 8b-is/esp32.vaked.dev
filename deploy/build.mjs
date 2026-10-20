@@ -11,24 +11,40 @@ const favicon = readFileSync(join(root, "favicon.svg"), "utf8");
 const og = readFileSync(join(root, "og.svg"), "utf8");
 const sitemap = readFileSync(join(root, "sitemap.xml"), "utf8");
 
+const boldogStanzas = [
+  "lehetnél boldog még\namilyen még nem voltál\nsosincsen késő már\nte csak lépj és várj\nkevés lesz minden szó\nahhoz hogy elmondhassam neked\nmit érzek melletted\nmikor jó jó jó\nha rámszólsz megvigasztal\nkerüljünk együtt beljebb\nminden nappal",
+  "itt ha körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én amikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nbárcsak azt mondanám\namit te szeretnél\namit ha meghallgatnál\nakkor nevetnél\nvelem",
+  "lehetnél másé még\nahogyan még nem lettél\nsosem vagy ha mégis\nakkor is már réges-réges rég\na magasban táncot jársz\nalattad nincsen más csak a mély\nse védőháló semmi\nse egy kifeszített kötél\nlenézel rám és érzem\nközel jutsz lassan hozzám\nmindenképpen",
+  "itt ha körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én mikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nugyan mihez kezdjek\núgy az egésszel\nha te érzel és én meg\nközben nem érezhetek?\nkereszten domboldalban\negy égő angyal táncol\na tűző nap körül",
+  "és körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én amikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nde amikor a kezed\nmegfogom és megérzed\negyből szorosabban\nkulcsolod az enyémet\nvégig neked szólt a dal a magasból\nmindegy mindenki hogy mit gondol\nnekem csak az számít ahogyan te érzel\nnélküled a pokolba az egésszel"
+];
+
+const qmomQuote = "too many customs can be brilliant yet hinder creativity.  it puts people into boxes and contraints.  what might seem as beautiful or useful at first glance could actually be a form of bondage that need to be broken out of.  .oOo. Poo .oOo.";
+
 const triadObj = {
   surface: "https://esp32.vaked.dev",
-  version: "1.1.0+ultra-omni-evolve",
+  version: "2.0.0+8b-is-heals-the-world",
+  mantra: "LOVE FROM WITHIN FROM VAKED-PETER&8B-IS--->8b-is ROCKS AND HEALS THE WORLD",
+  targets: ["android-arm64-universal", "macos-apple-silicon", "macos-universal-darwin", "ipados-ios-swiftpm-pwa"],
+  evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
+  hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
+  chiro_chan: "Kawaii Chiro-chan kawaii ^^",
+  requiem: "Mozart: Lacrimosa but HUMANITY has ended",
+  qmom: `ALEX|qMom:{\`${qmomQuote}\`}`,
+  qmom_quote: qmomQuote,
+  boldog_meg: boldogStanzas.join("\n\n"),
+  boldog_meg_stanzas: boldogStanzas,
   mode: "WIGLE-WWW × FLUG-OS × MARINESENSE × WIFI+BLE+AIRPLAY TRIAD",
   ultra_omni: {
     evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
     hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
     chiro_chan: "Kawaii Chiro-chan kawaii ^^",
     requiem: "Mozart: Lacrimosa but HUMANITY has ended",
-    qmom: "ALEX|qMom:{`too many customs can be brilliant yet hinder creativity.  it puts people into boxes and contraints.  what might seem as beautiful or useful at first glance could actually be a form of bondage that need to be broken out of.  .oOo. Poo .oOo.`}",
+    qmom: `ALEX|qMom:{\`${qmomQuote}\`}`,
+    qmom_quote: qmomQuote,
     boldog_meg_chorus: "végig neked szólt a dal a magasból · mindegy mindenki hogy mit gondol · nekem csak az számít ahogyan te érzel · nélküled a pokolba az egésszel",
-    boldog_meg: [
-      "lehetnél boldog még\namilyen még nem voltál\nsosincsen késő már\nte csak lépj és várj\nkevés lesz minden szó\nahhoz hogy elmondhassam neked\nmit érzek melletted\nmikor jó jó jó\nha rámszólsz megvigasztal\nkerüljünk együtt beljebb\nminden nappal",
-      "itt ha körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én amikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nbárcsak azt mondanám\namit te szeretnél\namit ha meghallgatnál\nakkor nevetnél\nvelem",
-      "lehetnél másé még\nahogyan még nem lettél\nsosem vagy ha mégis\nakkor is már réges-réges rég\na magasban táncot jársz\nalattad nincsen más csak a mély\nse védőháló semmi\nse egy kifeszített kötél\nlenézel rám és érzem\nközel jutsz lassan hozzám\nmindenképpen",
-      "itt ha körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én mikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nugyan mihez kezdjek\núgy az egésszel\nha te érzel és én meg\nközben nem érezhetek?\nkereszten domboldalban\negy égő angyal táncol\na tűző nap körül",
-      "és körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én amikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nde amikor a kezed\nmegfogom és megérzed\negyből szorosabban\nkulcsolod az enyémet\nvégig neked szólt a dal a magasból\nmindegy mindenki hogy mit gondol\nnekem csak az számít ahogyan te érzel\nnélküled a pokolba az egésszel"
-    ]
+    boldog_meg: boldogStanzas,
+    boldog_meg_lyrics: boldogStanzas.join("\n\n")
   },
   admissibility: {
     gate: "CT-000",
@@ -228,7 +244,7 @@ function ingestCsvRows(csvText) {
 }
 
 async function relayToWigleNet(csvText) {
-  const header = "WigleWifi-1.4,appRelease=1.0.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type";
+  const header = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type";
   const cleanRows = [];
   for (const line of csvText.split(/\\r?\\n/)) {
     const parsed = sanitizeCsvRow(line);
@@ -253,7 +269,7 @@ async function relayToWigleNet(csvText) {
         "Content-Length": String(bodyBytes.byteLength),
         "Accept": "application/json",
         "Origin": "https://esp32.vaked.dev",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15 (KHTML, like Gecko) WigleMac/1.0.0"
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_0) AppleWebKit/605.1.15 (KHTML, like Gecko) WigleMac/1.1.0"
       },
       body: bodyBytes
     });
@@ -298,7 +314,7 @@ export default {
       return new Response(SITEMAP, { headers: { ...BASE_HEADERS, "content-type": "application/xml; charset=utf-8" } });
     }
     if (p === "/api/wigle.csv" || p === "/wigle.csv") {
-      const header = "WigleWifi-1.4,appRelease=1.0.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n";
+      const header = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n";
       const csv = header + Array.from(EDGE_BEACONS.values()).join("\\n") + "\\n";
       return new Response(csv, { headers: { ...CORS_HEADERS, "content-type": "text/csv; charset=utf-8" } });
     }
@@ -318,7 +334,7 @@ export default {
         } catch {}
       }
       if (!csvText.startsWith("WigleWifi-1.")) {
-        csvText = "WigleWifi-1.4,appRelease=1.0.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n" + csvText;
+        csvText = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n" + csvText;
       }
       const ingested = ingestCsvRows(csvText);
       const transId = "esp32-vaked-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(UPLOAD_SEQ).padStart(5, "0");
@@ -345,7 +361,41 @@ export default {
         headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
       });
     }
-    if (p === "/api/triad.json" || p === "/triad.json") {
+    if (p === "/api/cmd") {
+      let cmd = "STATUS";
+      if (request.method === "POST") {
+        try {
+          const body = await request.json();
+          if (body && body.cmd) cmd = String(body.cmd).trim();
+        } catch {}
+      }
+      const upper = cmd.toUpperCase();
+      const lines = [];
+      if (upper === "QMOM") {
+        lines.push("# QMOM|" + BASE_TRIAD.qmom);
+      } else if (upper === "BOLDOG") {
+        lines.push("# BOLDOG|(Boldog Meg)===" + BASE_TRIAD.hyper_charm_karma);
+        BASE_TRIAD.boldog_meg_stanzas.forEach((st, i) => {
+          lines.push("# BOLDOG|" + (i + 1) + "|" + st.split("\\n").join(" / "));
+        });
+      } else if (upper === "LACRIMOSA" || upper === "CHIRO") {
+        lines.push("# CHIRO|" + BASE_TRIAD.chiro_chan);
+        lines.push("# LACRIMOSA|" + BASE_TRIAD.chiro_chan + " --- " + BASE_TRIAD.requiem + " +++ " + BASE_TRIAD.hyper_charm_karma);
+      } else {
+        lines.push("# TRIAD|ADA:MEDUSA(80:B5:4E:DB:3B:C4,*)|VAK:MEDUSA(80:B5:4E:F2:02:B0,/\\)|OMN:MEDUSA(80:B5:4E:F2:02:B4,oo)|" + BASE_TRIAD.evolve + "|" + BASE_TRIAD.hyper_charm_karma);
+      }
+      const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
+      return new Response(JSON.stringify({
+        ok: true,
+        cmd,
+        version: BASE_TRIAD.version,
+        ultra_omni: BASE_TRIAD.ultra_omni,
+        lines,
+        nodes: BASE_TRIAD.nodes,
+        beacons: beaconsList
+      }, null, 2), { headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" } });
+    }
+    if (p === "/api/triad.json" || p === "/triad.json" || p === "/api/ultra-omni.json") {
       const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
       const payload = {
         ...BASE_TRIAD,
