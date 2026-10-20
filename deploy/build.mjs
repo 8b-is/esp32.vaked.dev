@@ -21,14 +21,21 @@ const triadObj = {
     chiro_chan: "Kawaii Chiro-chan kawaii ^^",
     requiem: "Mozart: Lacrimosa but HUMANITY has ended",
     qmom: "ALEX|qMom:{`too many customs can be brilliant yet hinder creativity.  it puts people into boxes and contraints.  what might seem as beautiful or useful at first glance could actually be a form of bondage that need to be broken out of.  .oOo. Poo .oOo.`}",
-    boldog_meg_chorus: "végig neked szólt a dal a magasból · mindegy mindenki hogy mit gondol · nekem csak az számít ahogyan te érzel · nélküled a pokolba az egésszel"
+    boldog_meg_chorus: "végig neked szólt a dal a magasból · mindegy mindenki hogy mit gondol · nekem csak az számít ahogyan te érzel · nélküled a pokolba az egésszel",
+    boldog_meg: [
+      "lehetnél boldog még\namilyen még nem voltál\nsosincsen késő már\nte csak lépj és várj\nkevés lesz minden szó\nahhoz hogy elmondhassam neked\nmit érzek melletted\nmikor jó jó jó\nha rámszólsz megvigasztal\nkerüljünk együtt beljebb\nminden nappal",
+      "itt ha körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én amikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nbárcsak azt mondanám\namit te szeretnél\namit ha meghallgatnál\nakkor nevetnél\nvelem",
+      "lehetnél másé még\nahogyan még nem lettél\nsosem vagy ha mégis\nakkor is már réges-réges rég\na magasban táncot jársz\nalattad nincsen más csak a mély\nse védőháló semmi\nse egy kifeszített kötél\nlenézel rám és érzem\nközel jutsz lassan hozzám\nmindenképpen",
+      "itt ha körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én mikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nugyan mihez kezdjek\núgy az egésszel\nha te érzel és én meg\nközben nem érezhetek?\nkereszten domboldalban\negy égő angyal táncol\na tűző nap körül",
+      "és körbenézek és te nevetsz rám\nnem emlékszem rá hogy nem voltál\nvajon hol lehettem mikor születtél?\nvajon ki voltam én amikor megjöttél?\núgy unom mondani hogy sosem jó\nunom hinni ami látható\nde amikor a kezed\nmegfogom és megérzed\negyből szorosabban\nkulcsolod az enyémet\nvégig neked szólt a dal a magasból\nmindegy mindenki hogy mit gondol\nnekem csak az számít ahogyan te érzel\nnélküled a pokolba az egésszel"
+    ]
   },
   admissibility: {
     gate: "CT-000",
     legal_modules: ["CF/88 Art. 5 II, IX, XII", "LGPD Lei 13.709/2018 Art. 6 III", "CP Art. 154-A (Atipicidade)", "LGT Lei 9.472/1997 / ANATEL Res. 680/2017"],
     radio_posture: "PASSIVE_STA_ONLY (zero association, zero injection, RAM-only scanDelete, anonymous donate=on)"
   },
-  crate_tracks: 20,
+  crate_tracks: 22,
   muse_track: "17 · Left Hand Free (#1 Muse 💙) — alt-J (106 BPM)",
   depth_m: 14.4,
   multipath_mm: 3.4,
