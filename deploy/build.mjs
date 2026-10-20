@@ -13,8 +13,16 @@ const sitemap = readFileSync(join(root, "sitemap.xml"), "utf8");
 
 const triadObj = {
   surface: "https://esp32.vaked.dev",
-  version: "1.0.0+medusa-omni",
+  version: "1.1.0+ultra-omni-evolve",
   mode: "WIGLE-WWW × FLUG-OS × MARINESENSE × WIFI+BLE+AIRPLAY TRIAD",
+  ultra_omni: {
+    evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
+    hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
+    chiro_chan: "Kawaii Chiro-chan kawaii ^^",
+    requiem: "Mozart: Lacrimosa but HUMANITY has ended",
+    qmom: "ALEX|qMom:{`too many customs can be brilliant yet hinder creativity.  it puts people into boxes and contraints.  what might seem as beautiful or useful at first glance could actually be a form of bondage that need to be broken out of.  .oOo. Poo .oOo.`}",
+    boldog_meg_chorus: "végig neked szólt a dal a magasból · mindegy mindenki hogy mit gondol · nekem csak az számít ahogyan te érzel · nélküled a pokolba az egésszel"
+  },
   admissibility: {
     gate: "CT-000",
     legal_modules: ["CF/88 Art. 5 II, IX, XII", "LGPD Lei 13.709/2018 Art. 6 III", "CP Art. 154-A (Atipicidade)", "LGT Lei 9.472/1997 / ANATEL Res. 680/2017"],
