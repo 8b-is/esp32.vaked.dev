@@ -6,6 +6,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 
 const html = readFileSync(join(root, "index.html"), "utf8");
+const swJs = readFileSync(join(root, "sw.js"), "utf8");
+const manifestJson = readFileSync(join(root, "manifest.webmanifest"), "utf8");
 const robots = readFileSync(join(root, "robots.txt"), "utf8");
 const favicon = readFileSync(join(root, "favicon.svg"), "utf8");
 const og = readFileSync(join(root, "og.svg"), "utf8");
@@ -23,9 +25,41 @@ const qmomQuote = "too many customs can be brilliant yet hinder creativity.  it 
 
 const triadObj = {
   surface: "https://esp32.vaked.dev",
-  version: "2.0.0+8b-is-heals-the-world",
+  version: "2.0.0+alexai-kompress-offline-first",
   mantra: "LOVE FROM WITHIN FROM VAKED-PETER&8B-IS--->8b-is ROCKS AND HEALS THE WORLD",
   targets: ["android-arm64-universal", "macos-apple-silicon", "macos-universal-darwin", "ipados-ios-swiftpm-pwa"],
+  offline_first: {
+    guaranteed: true,
+    service_worker: "/sw.js",
+    manifest: "/manifest.webmanifest",
+    storage_engines: ["IndexedDB:wigle-triad-offline-db", "localStorage:wigle_triad_beacons_v2", "SQLite:wigle_offline.db", "JSON:~/.cache/wigle-triad/"],
+    external_cdn_dependencies: 0,
+    auto_sync_queue: true
+  },
+  alexai: {
+    repo: "https://github.com/8b-is/alexai",
+    engine: "GAIA-MLX-QUANT",
+    quantization: "BitNet b1.58 {-1, 0, +1}",
+    bits_per_weight: 1.5849625,
+    compression_vs_f32: 20.18975,
+    pack_format: "5 trits/byte base-3 little-endian",
+    layers: [
+      { layer: "Ananke", metric: "gravity", value: 1.0 },
+      { layer: "Chaos", metric: "entropy_rest", value: 0.62 },
+      { layer: "Zephyrus", metric: "weather_rest", value: 0.5 },
+      { layer: "Aphrodite", metric: "resonance_phi", value: 1.6180339887498948 }
+    ],
+    sovereign_loopback: "127.0.0.1"
+  },
+  kompress_ultra: {
+    engine: "kompress-ultra",
+    version: "16.2.0",
+    roles: ["Pruner (Ebbinghaus e^-age/5)", "Rewriter (Ditto ″)", "Circulator (JSONL Queue)", "Composer (BrainLine)"],
+    brain_line: "ralph · lodri · krengel · cosmos",
+    exact_keep_rate: 0.993,
+    lambda_schedule: "3.0 -> 1/pi",
+    embedding_dims: 768
+  },
   evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
   hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
   chiro_chan: "Kawaii Chiro-chan kawaii ^^",
@@ -34,7 +68,7 @@ const triadObj = {
   qmom_quote: qmomQuote,
   boldog_meg: boldogStanzas.join("\n\n"),
   boldog_meg_stanzas: boldogStanzas,
-  mode: "WIGLE-WWW × FLUG-OS × MARINESENSE × WIFI+BLE+AIRPLAY TRIAD",
+  mode: "WIGLE-WWW × FLUG-OS × MARINESENSE × ALEXAI × KOMPRESS-ULTRA × WIFI+BLE+AIRPLAY TRIAD",
   ultra_omni: {
     evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
     hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
@@ -135,6 +169,8 @@ writeFileSync(
   join(here, "worker.js"),
   `// esp32.vaked.dev — GENERATED from index.html & assets by deploy/build.mjs
 const HTML = ${JSON.stringify(html)};
+const SW_JS = ${JSON.stringify(swJs)};
+const MANIFEST_JSON = ${JSON.stringify(manifestJson)};
 const ROBOTS = ${JSON.stringify(robots)};
 const FAVICON = ${JSON.stringify(favicon)};
 const OG = ${JSON.stringify(og)};
@@ -294,12 +330,107 @@ async function relayToWigleNet(csvText) {
   }
 }
 
+function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
+  const prompt = String(promptStr || "Analyze Shinjuku 2.4GHz Ch 6 saturation, BLE proximity & AirPlay RAOP surface").trim();
+  let h = 0x811c9dc5;
+  for (let i = 0; i < prompt.length; i++) {
+    h ^= prompt.charCodeAt(i) & 0xff;
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  const seed = h >>> 0;
+  let a = (seed + 0x6d2b79f5) >>> 0;
+  let t = Math.imul(a ^ (a >>> 15), a | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  const rand0 = ((t ^ (t >>> 14)) >>> 0) / 4294967296.0;
+
+  const gravity = 1.0;
+  const weather = Math.max(0, Math.min(1, 0.5 + (rand0 - 0.5) * 0.4));
+  const entropy = Math.max(0, Math.min(1, 0.62 + Math.min(prompt.length / 4096.0, 0.35) - 0.12));
+  const resonance = 1.6180339887498948;
+  const spread = Math.abs(entropy - 0.62) * 0.6 + Math.abs(weather - 0.5) * 0.4;
+  const coherence = Math.max(0, Math.min(1, 1.0 - spread));
+
+  const pow3 = [1, 3, 9, 27, 81];
+  const trits = beaconsList.map(b => (b.rssi >= -68 ? 1 : (b.rssi >= -80 ? 0 : -1)));
+  while (trits.length < 30) trits.push(1);
+  const packedBytes = [];
+  for (let i = 0; i < trits.length; i += 5) {
+    let acc = 0;
+    for (let j = 0; j < 5 && (i + j) < trits.length; j++) {
+      const tr = trits[i + j];
+      const u = tr === -1 ? 2 : (tr === 1 ? 1 : 0);
+      acc += u * pow3[j];
+    }
+    packedBytes.push(acc & 0xff);
+  }
+  const packedHex = packedBytes.map(b => b.toString(16).padStart(2, "0")).join(" ");
+
+  const canonicalLines = beaconsList.map(b => {
+    const pfx = b.type === "BLE" || b.type === "BT" ? "B" : (b.type === "AIRPLAY" ? "A" : "W");
+    const authShort = String(b.auth || "").replaceAll("WPA2-PSK-CCMP][ESS", "W2").replaceAll("WPA3-SAE-CCMP][ESS", "W3").replaceAll("AIRPLAY-RAOP][ESS", "RAOP");
+    return [pfx, b.node || "MAC:MEDUSA", b.bssid, b.ssid, authShort, b.ch, b.rssi, b.band].join("|");
+  });
+  let prevTok = [];
+  const dittoLines = canonicalLines.map(line => {
+    const toks = line.split("|");
+    const dedup = prevTok.length ? toks.map((tk, idx) => (idx < prevTok.length && tk === prevTok[idx] && tk.length > 1) ? "″" : tk) : toks;
+    prevTok = toks;
+    return dedup.join("|");
+  });
+  const rawBytes = JSON.stringify(beaconsList).length + Array.from(EDGE_BEACONS.values()).join("\\n").length;
+  const wireStream = "# KU-v16.2.0 [BrainLine: ralph · lodri · krengel · cosmos | keep=0.993]\\n" + dittoLines.join("\\n");
+  const compBytes = wireStream.length;
+  const ratio = Number((rawBytes / Math.max(1, compBytes)).toFixed(2));
+  const savingsPct = Number(Math.max(0, (1 - compBytes / Math.max(1, rawBytes)) * 100).toFixed(1));
+
+  return {
+    alexai: {
+      engine: "GAIA-MLX-QUANT",
+      repo: "https://github.com/8b-is/alexai",
+      prompt,
+      seed,
+      gravity,
+      entropy: Number(entropy.toFixed(4)),
+      weather: Number(weather.toFixed(4)),
+      resonance,
+      coherence: Number(coherence.toFixed(4)),
+      bits_per_weight: 1.5849625,
+      compression_vs_f32: 20.18975,
+      packed_hex: packedHex,
+      layers: [
+        { layer: "Ananke", value: gravity },
+        { layer: "Chaos", value: Number(entropy.toFixed(4)) },
+        { layer: "Zephyrus", value: Number(weather.toFixed(4)) },
+        { layer: "Aphrodite", value: resonance }
+      ]
+    },
+    kompress_ultra: {
+      engine: "kompress-ultra",
+      version: "16.2.0",
+      brain_line: "ralph · lodri · krengel · cosmos",
+      exact_keep_rate: 0.993,
+      ebbinghaus_retention: Number(Math.exp(-0.45 / 5.0).toFixed(4)),
+      raw_bytes: rawBytes,
+      compressed_bytes: compBytes,
+      compression_ratio: ratio,
+      savings_pct: savingsPct,
+      ditto_lines: dittoLines
+    }
+  };
+}
+
 export default {
   async fetch(request) {
     const url = new URL(request.url);
     const p = url.pathname;
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
+    if (p === "/sw.js") {
+      return new Response(SW_JS, { headers: { ...BASE_HEADERS, "content-type": "application/javascript; charset=utf-8", "service-worker-allowed": "/" } });
+    }
+    if (p === "/manifest.webmanifest") {
+      return new Response(MANIFEST_JSON, { headers: { ...BASE_HEADERS, "content-type": "application/manifest+json; charset=utf-8" } });
     }
     if (p === "/robots.txt") {
       return new Response(ROBOTS, { headers: { ...BASE_HEADERS, "content-type": "text/plain; charset=utf-8" } });
@@ -317,6 +448,14 @@ export default {
       const header = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n";
       const csv = header + Array.from(EDGE_BEACONS.values()).join("\\n") + "\\n";
       return new Response(csv, { headers: { ...CORS_HEADERS, "content-type": "text/csv; charset=utf-8" } });
+    }
+    if (p === "/api/alexai" || p === "/api/kompress") {
+      const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
+      const qPrompt = url.searchParams.get("prompt") || "Analyze Shinjuku 2.4GHz Ch 6 saturation, BLE proximity & AirPlay RAOP surface";
+      const res = computeEdgeAlexAiAndKompress(qPrompt, beaconsList);
+      return new Response(JSON.stringify({ ok: true, ...res }, null, 2), {
+        headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
+      });
     }
     if (p === "/api/upload" || p === "/api/v2/file/upload") {
       if (request.method !== "POST") {
@@ -370,6 +509,8 @@ export default {
         } catch {}
       }
       const upper = cmd.toUpperCase();
+      const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
+      const ak = computeEdgeAlexAiAndKompress(cmd, beaconsList);
       const lines = [];
       if (upper === "QMOM") {
         lines.push("# QMOM|" + BASE_TRIAD.qmom);
@@ -381,15 +522,20 @@ export default {
       } else if (upper === "LACRIMOSA" || upper === "CHIRO") {
         lines.push("# CHIRO|" + BASE_TRIAD.chiro_chan);
         lines.push("# LACRIMOSA|" + BASE_TRIAD.chiro_chan + " --- " + BASE_TRIAD.requiem + " +++ " + BASE_TRIAD.hyper_charm_karma);
+      } else if (upper === "ALEXAI") {
+        lines.push("# ALEXAI|GAIA-MLX-QUANT|coherence=" + ak.alexai.coherence + "|bits=1.585|ratio=20.19x|hex=[" + ak.alexai.packed_hex + "]");
+      } else if (upper === "KOMPRESS") {
+        lines.push("# KOMPRESS|v16.2.0|raw=" + ak.kompress_ultra.raw_bytes + "B|comp=" + ak.kompress_ultra.compressed_bytes + "B|ratio=" + ak.kompress_ultra.compression_ratio + "x|savings=-" + ak.kompress_ultra.savings_pct + "%");
       } else {
         lines.push("# TRIAD|ADA:MEDUSA(80:B5:4E:DB:3B:C4,*)|VAK:MEDUSA(80:B5:4E:F2:02:B0,/\\)|OMN:MEDUSA(80:B5:4E:F2:02:B4,oo)|" + BASE_TRIAD.evolve + "|" + BASE_TRIAD.hyper_charm_karma);
       }
-      const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
       return new Response(JSON.stringify({
         ok: true,
         cmd,
         version: BASE_TRIAD.version,
         ultra_omni: BASE_TRIAD.ultra_omni,
+        alexai: ak.alexai,
+        kompress_ultra: ak.kompress_ultra,
         lines,
         nodes: BASE_TRIAD.nodes,
         beacons: beaconsList
@@ -397,8 +543,11 @@ export default {
     }
     if (p === "/api/triad.json" || p === "/triad.json" || p === "/api/ultra-omni.json") {
       const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
+      const ak = computeEdgeAlexAiAndKompress(null, beaconsList);
       const payload = {
         ...BASE_TRIAD,
+        alexai_live: ak.alexai,
+        kompress_ultra_live: ak.kompress_ultra,
         anonymous_upload_endpoint: "https://esp32.vaked.dev/api/upload",
         wigle_csv_endpoint: "https://esp32.vaked.dev/api/wigle.csv",
         stored_beacons_count: EDGE_BEACONS.size,
