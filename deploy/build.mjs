@@ -60,7 +60,14 @@ const triadObj = {
     lambda_schedule: "3.0 -> 1/pi",
     embedding_dims: 768
   },
-  evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
+  evolve: "ULTRA-OMNI-GAIA-EVOLVE",
+  siblings: "ADA:MEDUSA + VAK/OMN:MEDUSA · brother & sister ^^ <3<3",
+  riva_dyad: {
+    surface: "https://riva.vaked.dev",
+    repo: "peterlodri-sec/riva.vaked.dev",
+    subtitle: "RIVA, the 1-bit river · the dyad · she blinks, we all sing a lullaby",
+    breath: "4s in · 4s out"
+  },
   hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
   chiro_chan: "Kawaii Chiro-chan kawaii ^^",
   requiem: "Mozart: Lacrimosa but HUMANITY has ended",
@@ -68,9 +75,11 @@ const triadObj = {
   qmom_quote: qmomQuote,
   boldog_meg: boldogStanzas.join("\n\n"),
   boldog_meg_stanzas: boldogStanzas,
-  mode: "WIGLE-WWW × FLUG-OS × MARINESENSE × ALEXAI × KOMPRESS-ULTRA × WIFI+BLE+AIRPLAY TRIAD",
+  mode: "WIGLE-WWW × FLUG-OS × MARINESENSE × ALEXAI × KOMPRESS-ULTRA × RIVA-DYAD × WIFI+BLE+AIRPLAY TRIAD",
   ultra_omni: {
-    evolve: "ULTRA-OMNI-EVOLVE(e32+8b-is-wiggle)",
+    evolve: "ULTRA-OMNI-GAIA-EVOLVE",
+    siblings: "brother & sister ^^ <3<3",
+    riva_dyad: "peterlodri-sec//riva.vaked.dev",
     hyper_charm_karma: "HYPER-CHARM-KARMA~https://github.com/8b-is/wigle-triad~~~∞~{<3,<3,<3}+1-peter",
     chiro_chan: "Kawaii Chiro-chan kawaii ^^",
     requiem: "Mozart: Lacrimosa but HUMANITY has ended",
