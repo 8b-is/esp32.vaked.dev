@@ -67,7 +67,18 @@ def drain_and_parse(node: TriadNode, duration_s: float = 1.2) -> List[str]:
     deadline = time.time() + duration_s
     lines: List[str] = []
     while time.time() < deadline:
-        raw = node.ser.readline()
+        try:
+            raw = node.ser.readline()
+        except Exception:
+            time.sleep(0.15)
+            try:
+                node.ser.close()
+                node.ser = serial.Serial(node.port, 115200, timeout=0.2, dsrdtr=False, rtscts=False)
+                node.ser.dtr = False
+                node.ser.rts = False
+            except Exception:
+                pass
+            continue
         if not raw:
             continue
         line = raw.decode("utf-8", errors="replace").strip()
@@ -304,21 +315,36 @@ def run_trialogue_round(nodes: List[TriadNode], round_idx: int, mute_mac: bool =
         if not mute_mac:
             mac_say(tdeck_spoken, voice=tdeck.voice, rate=190, wait=True)
 
-    # 4. Simultaneous 3-Device Harmonic Finale (432 Hz + 528 Hz + 852 Hz)
-    print("\n[3-DEVICE HARMONIC CHORD] -> Simultaneous on-chip audio + ESP-NOW Triad Splash across all 3 boards!")
+    # 4. Simultaneous 3-Device Harmonic Finale + music.vaked.dev (SPREAD SPHERE ALL · INTO LOVE) Choreography
+    print("\n[4/4 · MUSIC.VAKED.DEV LIVE BRIDGE] -> 44-Layer Sovereign Acoustic Sync + 8-Band Ternary EQ + ENTHEA VIZ!")
     if ada:
-        ada.ser.write(b"BICEP GLUE\nSYNC\n")
+        # Put ADA:MEDUSA (1.8" SH8601) on Tab 1 (8-Band Ternary Harmonic EQ + Track #1 Innerbloom / #8 Golden Ratio 432xPhi)
+        ada_track = 1 if (round_idx % 2 == 1) else 8
+        ada.ser.write(
+            f"ENGINE qt:62|44L|432Hz|INTO-LOVE\n"
+            f"SPEAK Listening to music vaked dev Spread Sphere All Into Love\n"
+            f"TRACK {ada_track}\n"
+            f"TAB 1\n"
+            f"SYNC\n".encode("utf-8")
+        )
         ada.ser.flush()
     if omn:
-        omn.ser.write(b"RIVA\nSYNC\n")
+        # Put OMN:MEDUSA (2.06" CO5300 + ES7210 dual-mic) on Tab 5 (ENTHEA VIZ + Four-Heart Triad LOCKED + 8b-is-music feed)
+        omn.ser.write(
+            b"ENGINE qt:62|44L|852Hz|SPREAD-SPHERE-ALL\n"
+            b"VIZ 2\n"
+            b"TAB 5\n"
+            b"RIVA\n"
+            b"SYNC\n"
+        )
         omn.ser.flush()
     if tdeck:
-        tdeck.ser.write(b"SPEAK Three node sovereign chord complete\nTRIAD\n")
+        tdeck.ser.write(b"SPEAK Music vaked dev 432 528 864 Hertz cymatic lock\nTRIAD\n")
         tdeck.ser.flush()
 
     for n in nodes:
-        for line in drain_and_parse(n, 1.2):
-            if line.startswith(("# BICEP|", "# RIVA|", "# SYNC|", "# CHIRP|", "# TRIAD|")):
+        for line in drain_and_parse(n, 1.5):
+            if line.startswith(("# ENGINE|", "# VIZ|", "# TTS|", "# BICEP|", "# RIVA|", "# SYNC|", "# CHIRP|", "# TRIAD|")) or '"event":"zoneinn_track"' in line:
                 print(f"  {n.node_id}: {line}")
 
 
