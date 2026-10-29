@@ -214,6 +214,21 @@ def parse_learn(line: str):
     }
 
 
+def parse_omni_frame(line: str):
+    """Parse ``# UPZ|{...}``, ``# ALEXAI|{...}``, or ``# AURORA|{...}`` embedded frames."""
+    import json
+
+    for kind in ("UPZ", "ALEXAI", "AURORA"):
+        marker = f"# {kind}|"
+        if line.startswith(marker):
+            try:
+                payload = json.loads(line[len(marker):])
+            except ValueError:
+                return None
+            return {"kind": kind, "payload": payload}
+    return None
+
+
 def speak(text: str, voice: str, rate: int, dry_run: bool) -> None:
     if dry_run:
         print(f"[say] {text}")
@@ -265,6 +280,7 @@ def main() -> int:
 
     spoken = 0
     last_spoken = 0.0
+    last_state = None
     deadline = time.time() + args.seconds
     print(f"listening on {args.port} @ {args.baud} for {args.seconds:g}s", flush=True)
 
@@ -280,6 +296,7 @@ def main() -> int:
                 continue
             state = parse_json_state(line)
             if state is not None:
+                last_state = state
                 wire64 = seal_medusa_litany_wire_64b(
                     {"phase": 2, "trit": state["trit"], "value": state["entropy_pq"]},
                     line,
@@ -290,14 +307,15 @@ def main() -> int:
                     f"rssi={state['mean_rssi']} trits={state['trits']} wire=64B@0x62 seal16=0x{seal16:04x} v={state['version']}",
                     flush=True,
                 )
-                now = time.time()
-                if now - last_spoken >= args.interval:
-                    nets = state.get("networks") or 0
-                    ent_pq = state.get("entropy_pq")
-                    text = f"{nets} networks in the air. Entropy {ent_pq}. I am listening."
-                    speak(text, args.voice, args.rate, args.dry_run)
-                    last_spoken = now
-                    spoken += 1
+                if "aurora" not in str(state.get("version", "")).lower():
+                    now = time.time()
+                    if now - last_spoken >= args.interval:
+                        nets = state.get("networks") or 0
+                        ent_pq = state.get("entropy_pq")
+                        text = f"{nets} networks in the air. Entropy {ent_pq}. I am listening."
+                        speak(text, args.voice, args.rate, args.dry_run)
+                        last_spoken = now
+                        spoken += 1
                 continue
 
             learn = parse_learn(line)
@@ -308,6 +326,32 @@ def main() -> int:
                     speak(learn["say"], args.voice, args.rate, args.dry_run)
                     last_spoken = now
                     spoken += 1
+                continue
+
+            omni = parse_omni_frame(line)
+            if omni is not None:
+                kind = omni["kind"]
+                p = omni["payload"]
+                if kind == "UPZ":
+                    print(
+                        f"upz node={p.get('node')} gate={p.get('gate')} lanes={p.get('lanes')} "
+                        f"spqt={p.get('spqt_hex')} witl={p.get('witl_spqt')} mantra={p.get('galactic_mantra_fold')} "
+                        f"seal16={p.get('seal16')}",
+                        flush=True,
+                    )
+                elif kind == "ALEXAI":
+                    print(
+                        f"alexai node={p.get('node')} model={p.get('model')} scale_pq={p.get('scale_pq')} "
+                        f"b158={p.get('b158_hex')} trits={p.get('trits')} fold={p.get('fold')}",
+                        flush=True,
+                    )
+                elif kind == "AURORA":
+                    print(
+                        f"aurora node={p.get('node')} organ={p.get('organ')} salience_pq={p.get('salience_pq')} "
+                        f"entropy_pq={p.get('entropy_pq')} phase={p.get('phase')} trit={p.get('trit')} "
+                        f"seal16={p.get('wire_seal16')}",
+                        flush=True,
+                    )
                 continue
 
             parsed = parse_telemetry(line)
@@ -323,7 +367,11 @@ def main() -> int:
             )
             if now - last_spoken < args.interval:
                 continue
-            speak(REPLY[parsed["trit"]], args.voice, args.rate, args.dry_run)
+            utterance = REPLY[parsed["trit"]]
+            if last_state is not None:
+                nets = last_state.get("networks") or 0
+                utterance = f"{nets} networks in the air. {utterance}"
+            speak(utterance, args.voice, args.rate, args.dry_run)
             last_spoken = now
             spoken += 1
     finally:
