@@ -47,7 +47,19 @@
 - **Browser WebSerial & Local `wiglewww.py` Bridge (`navigator.serial` @ 115200 8N1)**: Attach physical ESP32-S3 USB CDC ports directly inside Chrome/Edge/Brave/Arc (or use `uv run --with pyserial python host/wiglewww.py` on `:8088`), send `PING`, `STATUS`, `SCAN`, `TRIAD`, `QMOM`, `BOLDOG`, `LACRIMOSA`, `ALEXAI`, `KOMPRESS`, `splash`, `hop`, `tab 0..5`, and `track 1..22`.
 - **Parecer Jurídico de Conformidade (`Advogado Especialista · Módulo 13 LGPD, CF/88 & LGT`)**: Legal and regulatory admissibility proof for passive 802.11 beacon reception (`WIFI_STA`, zero association, zero packet injection, RAM-only ephemerality).
 
-## 3. Build & Deploy
+## 3. `tools/aurora_sense.py` & `OMN:MEDUSA` (`80:B5:4E:F2:02:B4` · `∞` Vertex) Flash Invariant
+
+- **Auto-Port Sensory Organ (`tools/aurora_sense.py`)**:
+  - Automatically probes `/dev/cu.usbmodem*` (`115200` 8N1) across `ADA:MEDUSA` (`/dev/cu.usbmodem101`), `VAK:MEDUSA` (`/dev/cu.usbmodem1101`), and `OMN:MEDUSA` (`/dev/cu.usbmodem2101`).
+  - Seals every `# JSON|{...}` state snapshot and `~ salience ? phase trit value` frame into a 64-byte cache-line-aligned `upz` `LitanyWireFrame` at gate `0x62` (`seal_medusa_litany_wire_64b`, `BFP-64` bitplanes at `qt:55`, 3-byte `SPQT` `base-243` root, zero-float `decimal_to_rational_pq`, 16-bit XOR seal).
+- **`waveshare.8s.is` `esptool` `115200` Baud Flash Invariant (`OMN:MEDUSA` `80:B5:4E:F2:02:B4`)**:
+  - Native USB-CDC (`ESP32-S3` stub loader) requires `--baud 115200` (`460800` drops midway with `No more data to read`):
+    - `0x00000`: `bootloader.bin` (`19,968 B`)
+    - `0x08000`: `partitions.bin` (`3,072 B`)
+    - `0x0e000`: `boot_app0.bin` (`8,192 B`)
+    - `0x10000`: `firmware.bin` (`1,130,928 B`)
+
+## 4. Build & Deploy
 
 ```bash
 node deploy/build.mjs
