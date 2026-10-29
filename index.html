@@ -3750,12 +3750,20 @@ nélküled a pokolba az egésszel</div>
     fd.append("donate", "on");
     fd.append("file", new Blob([csv], { type: "text/csv" }), `wigle-triad-${Date.now()}.csv`);
 
-    const [res, directWigle] = await Promise.all([
+    const [db8sRes, res, directWigle] = await Promise.all([
+      // Priority #1: Sovereign DataBomb on 8s.is
+      fetch("https://8s.is/api/v2/file/upload", {
+        method: "POST",
+        headers: { "content-type": "text/csv; charset=utf-8" },
+        body: csv
+      }).then(async r => ({ ok: r.ok, status: r.status, json: await r.json().catch(() => null) })).catch(() => null),
+      // Priority #2: esp32.vaked.dev edge mirror
       fetch(`${REMOTE_API_ORIGIN}/api/upload?mirror=wigle`, {
         method: "POST",
         headers: { "content-type": "text/csv; charset=utf-8" },
         body: csv
       }).then(async r => ({ ok: r.ok, status: r.status, json: await r.json().catch(() => null) })).catch(() => null),
+      // Priority #3: api.wigle.net fallback
       fetch("https://api.wigle.net/api/v2/file/upload", {
         method: "POST",
         headers: { "Accept": "application/json" },
@@ -3763,6 +3771,8 @@ nélküled a pokolba az egésszel</div>
       }).then(async r => ({ ok: r.ok, status: r.status, json: await r.json().catch(() => null) })).catch(() => null)
     ]);
 
+    const db8sOk = Boolean(db8sRes && db8sRes.ok);
+    const db8sTid = db8sRes?.json?.transId || (db8sOk ? `databomb-8s-${Date.now()}` : "offline-queued");
     const data = res?.json || {};
     const swQueued = Boolean(data?.offline_queued);
     const espOk = Boolean(res && res.ok && !swQueued);
@@ -3776,17 +3786,17 @@ nélküled a pokolba az egésszel</div>
       : (relayOk ? (data?.wigle_net?.status || 200) : (directWigle?.status || data?.wigle_net?.status || 0));
     const wigTid = directTid || (relayOk ? (data?.wigle_net?.transId || `wigle-${Date.now()}`) : "offline-queued");
     const wigObs = directWigle?.json?.observer || data?.wigle_net?.observer || "anonymous";
-    const rows = data?.ingested || rowCount;
+    const rows = db8sRes?.json?.receipt?.total_rows || data?.ingested || rowCount;
 
-    if (espOk || wigOk) {
+    if (db8sOk || espOk || wigOk) {
       uploadReceipts.unshift(
         {
-          target: "api.wigle.net",
-          ok: wigOk,
-          status: wigStatus,
-          transId: wigTid,
+          target: "8s.is (DataBomb Priority #1)",
+          ok: db8sOk,
+          status: db8sRes?.status || 200,
+          transId: db8sTid,
           rows,
-          observer: wigObs,
+          observer: "8b-is-triad",
           ts
         },
         {
@@ -3796,6 +3806,15 @@ nélküled a pokolba az egésszel</div>
           transId: espTid,
           rows,
           observer: "anonymous",
+          ts
+        },
+        {
+          target: "api.wigle.net",
+          ok: wigOk,
+          status: wigStatus,
+          transId: wigTid,
+          rows,
+          observer: wigObs,
           ts
         }
       );

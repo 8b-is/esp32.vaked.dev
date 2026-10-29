@@ -288,6 +288,30 @@ function ingestCsvRows(csvText) {
   return count;
 }
 
+async function relayToDatabomb8s(csvText) {
+  try {
+    const r = await fetch("https://8s.is/api/v2/file/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Accept": "application/json",
+        "User-Agent": "WigleTriad-EdgeRelay/3.0.0 (esp32.vaked.dev -> DataBomb-8s)"
+      },
+      body: csvText
+    });
+    const j = await r.json().catch(() => null);
+    return {
+      ok: r.ok,
+      status: r.status,
+      target: "8s.is (DataBomb v3.0.0)",
+      transId: j?.transId || "databomb-8s-" + Date.now(),
+      receipt: j?.receipt || null
+    };
+  } catch (e) {
+    return { ok: false, status: 502, target: "8s.is (DataBomb v3.0.0)", error: String(e) };
+  }
+}
+
 async function relayToWigleNet(csvText) {
   const header = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type";
   const cleanRows = [];
@@ -513,6 +537,8 @@ export default {
       }
       const ingested = ingestCsvRows(csvText);
       const transId = "esp32-vaked-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(UPLOAD_SEQ).padStart(5, "0");
+      // Priority #1: Sovereign DataBomb on 8s.is
+      const databombRelay = await relayToDatabomb8s(csvText);
       let wigleRelay = null;
       if (url.searchParams.get("mirror") === "wigle") {
         wigleRelay = await relayToWigleNet(csvText);
@@ -520,17 +546,19 @@ export default {
       const resp = {
         success: true,
         ok: true,
+        priority_target: "https://8s.is/api/v2/file/upload",
         observer: "anonymous",
         donate: "on",
-        transId,
+        transId: databombRelay?.transId || transId,
         ingested,
         total_stored: EDGE_BEACONS.size,
+        databomb_8s: databombRelay,
         esp32_vaked_dev: { ok: true, transId, observer: "anonymous", ingested },
         wigle_net: wigleRelay,
         wigle_net_mirror: wigleRelay,
         results: {
           filename: transId + ".csv",
-          transids: [{ file: transId + ".csv", size: csvText.length, transId }]
+          transids: [{ file: transId + ".csv", size: csvText.length, transId: databombRelay?.transId || transId }]
         }
       };
       return new Response(JSON.stringify(resp, null, 2), {
