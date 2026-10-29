@@ -291,18 +291,23 @@ def discover_nodes(ports: Optional[List[str]] = None, baud: int = 115200) -> Lis
 
 def print_aligned_hud_table(nodes: List[TriadNode], round_idx: int, track_info: tuple) -> None:
     t_idx, t_title, t_artist, t_bpm, t_key, t_tag = track_info
-    print(f"\n╔{'═' * 106}╗")
-    print(
-        f"║  OMNI 3-NODE SOVEREIGN CONSTELLATION · ROUND {round_idx:<3} · "
+    # Column inner widths (including 1 space padding on each side):
+    # 23 + 1 + 13 + 1 + 4 + 1 + 19 + 1 + 18 + 1 + 11 + 1 + 13 = 107
+    inner_w = 107
+    banner = (
+        f"  OMNI 3-NODE SOVEREIGN CONSTELLATION · ROUND {round_idx:<3} · "
         f"music.vaked.dev: #{t_idx:02d} {t_title} — {t_artist} ({t_bpm} BPM {t_key})"
-        f"{' ' * max(0, 22 - len(t_title) - len(t_artist))}║"
     )
-    print(f"╠{'═' * 22}╦{'═' * 13}╦{'═' * 4}╦{'═' * 19}╦{'═' * 18}╦{'═' * 11}╦{'═' * 13}╣")
+    if len(banner) > inner_w:
+        banner = banner[:inner_w]
+    print(f"\n╔{'═' * inner_w}╗")
+    print(f"║{banner:<{inner_w}}║")
+    print(f"╠{'═' * 23}╦{'═' * 13}╦{'═' * 4}╦{'═' * 19}╦{'═' * 18}╦{'═' * 11}╦{'═' * 13}╣")
     print(
-        f"║ {'PORT':<20} ║ {'NODE':<11} ║ {'VX':<2} ║ {'MAC ADDRESS':<17} ║ "
+        f"║ {'PORT':<21} ║ {'NODE':<11} ║ {'VX':<2} ║ {'MAC ADDRESS':<17} ║ "
         f"{'DISPLAY HUD':<16} ║ {'PEER_RX':<9} ║ {'TRIAD TTL':<11} ║"
     )
-    print(f"╠{'═' * 22}╬{'═' * 13}╬{'═' * 4}╬{'═' * 19}╬{'═' * 18}╬{'═' * 11}╬{'═' * 13}╣")
+    print(f"╠{'═' * 23}╬{'═' * 13}╬{'═' * 4}╬{'═' * 19}╬{'═' * 18}╬{'═' * 11}╬{'═' * 13}╣")
     for n in nodes:
         s = n.last_sync
         j = n.last_json
@@ -311,10 +316,10 @@ def print_aligned_hud_table(nodes: List[TriadNode], round_idx: int, track_info: 
         ttl = s.get("anicca_ttl", j.get("anicca_ttl", [255, 255, 255]))
         ttl_str = f"{ttl[0]},{ttl[1]},{ttl[2]}" if isinstance(ttl, list) and len(ttl) == 3 else "255,255,255"
         print(
-            f"║ {n.port:<20} ║ {n.node_id:<11} ║ {n.vertex:<2} ║ {n.mac:<17} ║ "
+            f"║ {n.port:<21} ║ {n.node_id:<11} ║ {n.vertex:<2} ║ {n.mac:<17} ║ "
             f"{disp:<16} ║ {str(prx):<9} ║ {ttl_str:<11} ║"
         )
-    print(f"╚{'═' * 22}╩{'═' * 13}╩{'═' * 4}╩{'═' * 19}╩{'═' * 18}╩{'═' * 11}╩{'═' * 13}╝")
+    print(f"╚{'═' * 23}╩{'═' * 13}╩{'═' * 4}╩{'═' * 19}╩{'═' * 18}╩{'═' * 11}╩{'═' * 13}╝")
 
 
 def sync_all_nodes(nodes: List[TriadNode], round_idx: int) -> tuple:
