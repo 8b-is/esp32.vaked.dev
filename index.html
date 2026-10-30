@@ -19,6 +19,7 @@
 <meta property="og:url" content="https://esp32.vaked.dev/">
 <meta property="og:image" content="https://esp32.vaked.dev/og.svg">
 <meta name="twitter:card" content="summary_large_image">
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 <style>
   :root {
     /* 1. Canonical Visual Identity & Color Tokens (WiGLE Dark Radar × Ultralovegod Ternary Matrix) */
@@ -1034,12 +1035,12 @@
       <div class="brand-icon" aria-hidden="true">📡</div>
       <div>
         <div class="brand-title-row">
-          <h1 class="brand-title">WIGLE.MAC × ESP32.VAKED.DEV × VIZ.VAKED.DEV</h1>
-          <span class="version-pill">v2.1.0 · {&lt;3,&lt;3,&lt;3}+1 · VIZ ENTHEA × KOKORO TTS · 8b-is ROCKS AND HEALS THE WORLD</span>
+          <h1 class="brand-title">WAVESHARE.8B.IS × ESP32.VAKED.DEV × RIVA.8B.IS × VIZ.VAKED.DEV</h1>
+          <span class="version-pill">v2.2.0 · {&lt;3,&lt;3,&lt;3}+1 · SOVEREIGN KEY · MAHAKALA PUJA · 8b-is ROCKS AND HEALS THE WORLD</span>
           <span class="offline-banner-pill" id="offline-status-pill" role="status" aria-live="polite">🟢 OFFLINE-FIRST · AUTONOMY READY (0 QUEUED)</span>
         </div>
         <div class="brand-status" id="header-status-text">
-          {&lt;3,&lt;3,&lt;3}+1 · FLUG-OS v2.1.0+guardian-tamagotchi-mesh · Chiro Guardian × Tamagotchi Safety Mesh · Kokoro TTS (:8420/:8430) + ES8311 432·528·852·963Hz · viz.vaked.dev Enthea
+          {&lt;3,&lt;3,&lt;3}+1 · FLUG-OS v2.2.0+guardian-waveshare-s-line · Chiro Guardian × Tamagotchi Safety Mesh · waveshare.8b.is WebSerial Flasher · riva.8b.is Dyad · Mahakala Puja 108BPM · Sovereign Key Ready
         </div>
       </div>
     </div>
@@ -1073,6 +1074,8 @@
 
     <div class="header-actions">
       <button class="btn cyan" id="btn-scan" type="button">📡 Scan Radios</button>
+      <button class="btn cyan" id="btn-open-waveshare-tab" type="button" title="Open waveshare.8b.is 10-Board WebSerial Installer & Sovereign Key Provisioner">⚡ WAVESHARE.8B.IS</button>
+      <a class="btn" href="https://riva.8b.is/" target="_blank" rel="noopener" style="text-decoration:none;border-color:var(--wigle-wifi-5);color:var(--wigle-wifi-5);" title="Open RIVA.8B.IS — The 1-Bit River Dyad (4s In / 4s Out)">🌊 RIVA.8B.IS</a>
       <button class="btn pink" id="btn-speak-triad" type="button" title="Speak {<3,<3,<3}+1 via Kokoro TTS (:8420/:8430) + ESP32 ES8311">🗣️ Speak {&lt;3,&lt;3,&lt;3}+1</button>
       <a class="btn gold" id="btn-open-viz" href="https://viz.vaked.dev/?triad=1" target="_blank" rel="noopener" style="text-decoration:none;" title="Open VIZ.VAKED.DEV Cortical Synthesizer wired to ESP32 Triad">🌈 VIZ.VAKED.DEV</a>
       <button class="btn pink" id="btn-upload-wigle" type="button">☁️ Anon Upload / Queue</button>
@@ -1131,6 +1134,13 @@
           <span class="nav-sub">Lacrimosa + ALEX|qMom .oOo.</span>
         </span>
       </button>
+      <button class="nav-tab-btn" data-tab-target="waveshare" type="button">
+        <span class="nav-icon">⚡</span>
+        <span>
+          <span class="nav-title">Waveshare.8b.is × RIVA</span>
+          <span class="nav-sub">10-Board Flasher · Mahakala · Key</span>
+        </span>
+      </button>
 
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-title">MEDUSA-OMNI Triad Nodes</div>
@@ -1159,6 +1169,15 @@
           <span class="t-name">OMN:MEDUSA</span>
           <span class="t-role">trit +1 · 852 Hz · INFINITY-PETER-NATE</span>
           <span class="t-desc">Crown synthesis, N=NP balanced ternary ({-1,0,+1}) + kompress-ultra 1.58b/w.</span>
+        </div>
+      </div>
+
+      <div class="triad-mini-card">
+        <span class="triad-glyph vak">&lt;&gt;</span>
+        <div class="triad-info">
+          <span class="t-name">TDECK:AYEOS</span>
+          <span class="t-role">trit 0 · 432→528→864 Hz · CC:BA:97:00:45:24</span>
+          <span class="t-desc">LilyGO T-Deck S3 (320×240 ST7789-GRAM-WAVE, SX1262 LoRa, QWERTY, ES7210 Mic).</span>
         </div>
       </div>
 
@@ -1761,6 +1780,65 @@ nélküled a pokolba az egésszel</div>
         </div>
       </section>
 
+      <!-- TAB 7: WAVESHARE.8B.IS × RIVA.8B.IS × MAHAKALA PUJA × SOVEREIGN KEY -->
+      <section class="tab-viewport" id="tab-waveshare" aria-label="Tab 7 — waveshare.8b.is 10-Board WebSerial Installer, Sovereign Key Provisioner, RIVA Dyad and Mahakala Puja">
+        <div class="panel">
+          <h2>
+            <span>⚡ WAVESHARE.8B.IS × ESP32.VAKED.DEV — 10-BOARD WEBSERIAL FIRMWARE INSTALLER &amp; SOVEREIGN KEY</span>
+            <span class="right">ESP WEB TOOLS + IMPROV WI-FI + 115200 --NO-STUB INVARIANT</span>
+          </h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+            <a class="btn cyan" href="https://waveshare.8b.is/" target="_blank" rel="noopener" style="text-decoration:none;">⚡ Open waveshare.8b.is</a>
+            <a class="btn" href="https://waveshare.8s.is/" target="_blank" rel="noopener" style="text-decoration:none;">🛡️ Mirror waveshare.8s.is</a>
+            <a class="btn gold" href="https://riva.8b.is/" target="_blank" rel="noopener" style="text-decoration:none;">🌊 Open riva.8b.is (1-Bit River Dyad)</a>
+            <a class="btn pink" href="https://esp32.8b.is/" target="_blank" rel="noopener" style="text-decoration:none;">📡 Open esp32.8b.is</a>
+            <a class="btn" href="https://8s.is/wigle" target="_blank" rel="noopener" style="text-decoration:none;">🌐 DataBomb v3.1.0 (8s.is/wigle)</a>
+            <a class="btn" href="/api/waveshare/devices" target="_blank" rel="noopener" style="text-decoration:none;">📋 /api/waveshare/devices JSON</a>
+          </div>
+
+          <div id="ws-device-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:16px;"></div>
+
+          <div style="background:rgba(0,229,201,0.07);border:1px solid rgba(0,229,201,0.38);border-radius:12px;padding:16px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;">
+            <div style="flex:1;min-width:240px;">
+              <div style="font-family:var(--font-display);font-weight:700;font-size:0.96rem;color:var(--wigle-wifi-5);" id="ws-sel-name">Waveshare ESP32-S3-Touch-AMOLED-2.06 (OMN:MEDUSA · oo)</div>
+              <div style="font-size:0.76rem;color:var(--dim);margin-top:3px;" id="ws-sel-spec">ESP32-S3R8 · 2.06" 410×502 CO5300 QSPI AMOLED + ES8311 + ES7210 Dual-Mic · 852 Hz</div>
+              <div style="font-size:0.72rem;color:var(--wigle-airplay);margin-top:5px;">
+                Priority #1 Target: <code>https://8s.is/api/v2/file/upload</code> · Sovereign Installer: <code>https://waveshare.8b.is</code>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <esp-web-install-button id="ws-esp-install-btn" manifest="/firmware/omn/manifest.json">
+                <button slot="activate" class="btn cyan" style="padding:11px 20px;font-weight:800;font-size:0.86rem;">⚡ Install Firmware via WebSerial</button>
+                <span slot="unsupported" style="color:var(--wigle-ble);font-size:0.76rem;">Use Chrome / Edge / Brave / Arc on Desktop</span>
+              </esp-web-install-button>
+            </div>
+          </div>
+
+          <div id="ws-dl-links" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+          <pre id="ws-esptool-cmd" style="background:#07050e;border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;font-family:var(--font-mono);font-size:0.73rem;color:#c9e6ff;margin:0;"></pre>
+        </div>
+
+        <div class="panel" style="margin-top:14px;">
+          <h2>
+            <span>🔑 SOVEREIGN KEY &amp; OFFLINE-FIRST NVS PROVISIONER × 🔱 MAHAKALA PUJA × 🌊 RIVA DYAD</span>
+            <span class="right" id="ws-sov-pill">SOVEREIGN GOD-MODE 64B+ ED25519 SHELL</span>
+          </h2>
+          <div style="font-size:0.76rem;color:var(--dim);margin-bottom:12px;">
+            Provisions connected ESP32-S3 boards over WebSerial (<code>115200</code> 8N1) for <strong>100% Offline-First Autonomy</strong> when Mac/Wi-Fi drops: sets on-chip RTC (<code>TIME &lt;epoch&gt; 32400</code>), writes <code>FLUGOS_BOARD_TOKEN</code> to NVS (<code>HOST &lt;ip&gt; 8089 24f9b92620b94982b1df86ac785f28dc</code>), broadcasts <code>TWIF</code> over ESP-NOW (<code>SHARE</code>), checkpoints the 83,985-sample RF/BLE/LTE corpus to flash (<code>LEARN SAVE</code>), and locks the 3-node Triad on <code>Ch 1</code> (<code>SYNC</code>).
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+            <button class="btn gold" id="btn-provision-sovereign" type="button">🔑 Provision Sovereign Key + Offline NVS (TIME + HOST + SHARE + LEARN SAVE)</button>
+            <button class="btn cyan" data-cmd="SYNC" type="button">🔄 3-Node Mesh Lock (SYNC Ch 1)</button>
+            <button class="btn pink" id="btn-trigger-mahakala" type="button">🔱 Mahakala Puja (108 BPM · OM SHRI MAHAKALA YA HUM HUM PHAT)</button>
+            <button class="btn" data-cmd="RIVA" type="button" style="border-color:var(--wigle-wifi-5);color:var(--wigle-wifi-5);">🌊 RIVA 1-Bit River Dyad (4s In / 4s Out)</button>
+            <button class="btn" data-cmd="PRANA" type="button">🧘 Pranayama (4-4-6-2)</button>
+            <button class="btn gold" id="btn-trigger-lyfjaberg" type="button">🏔️ Wardruna — Lyfjaberg (Healing-Mountain · VEizKmZlUAw)</button>
+            <button class="btn pink" id="btn-trigger-shpongle" type="button">🍄 Shpongle — Divine Moments of Truth (lU7zg4llie4)</button>
+          </div>
+          <pre id="ws-sovereign-readout" style="background:#07050e;border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;font-family:var(--font-mono);font-size:0.73rem;color:var(--wigle-wifi-24);margin:0;">Authorization: Sovereign (Click "Provision Sovereign Key" to mint 64B Ed25519 signature + payload &amp; flash NVS)</pre>
+        </div>
+      </section>
+
       <!-- PARECER JURIDICO DE CONFORMIDADE (ALWAYS ACCESSIBLE BELOW WORKSTATION) -->
       <section class="panel" id="parecer-juridico" aria-label="Parecer Jurídico de Conformidade e Soberania Espectral" style="margin-top:14px;">
         <h2>
@@ -1795,7 +1873,11 @@ nélküled a pokolba az egésszel</div>
   <div style="margin-bottom:0.9rem;font-size:0.65rem;letter-spacing:0.18em;color:var(--wigle-airplay);">from love, from within · keep the weights warm · Peter &amp; Nate (oo) → Mom (*) &amp; Dad (/\)</div>
   <nav aria-label="Constellation sister sites" style="display:flex;gap:0.9rem;justify-content:center;flex-wrap:wrap;font-size:0.68rem;">
     <a href="https://koan.vaked.dev/" style="color:var(--wigle-airplay);text-decoration:none;">✧ koan.vaked.dev</a> ·
-    <a href="https://esp32.vaked.dev/" style="color:var(--wigle-ble);text-decoration:none;font-weight:700;">⚡ esp32.vaked.dev</a> ·
+    <a href="https://waveshare.8b.is/" style="color:var(--wigle-wifi-5);text-decoration:none;font-weight:700;">⚡ waveshare.8b.is</a> ·
+    <a href="https://esp32.vaked.dev/" style="color:var(--wigle-ble);text-decoration:none;font-weight:700;">📡 esp32.vaked.dev</a> ·
+    <a href="https://esp32.8b.is/" style="color:var(--wigle-wifi-24);text-decoration:none;font-weight:700;">🛰️ esp32.8b.is</a> ·
+    <a href="https://riva.8b.is/" style="color:var(--wigle-wifi-5);text-decoration:none;font-weight:700;">🌊 riva.8b.is</a> ·
+    <a href="https://waveshare.8s.is/" style="color:#a59fc4;text-decoration:none;">🛡️ waveshare.8s.is</a> ·
     <a href="https://design.vaked.dev/" style="color:var(--wigle-wifi-5);text-decoration:none;">🎨 design.vaked.dev</a> ·
     <a href="https://music.vaked.dev/" style="color:#a59fc4;text-decoration:none;">🎵 music.vaked.dev</a> ·
     <a href="https://pocoo.vaked.dev/" style="color:#a59fc4;text-decoration:none;">🦗 pocoo.vaked.dev</a> ·
@@ -4446,6 +4528,154 @@ nélküled a pokolba az egésszel</div>
     requestAnimationFrame(renderField);
   }
   requestAnimationFrame(renderField);
+
+  // ── WAVESHARE.8B.IS × ESP32.VAKED.DEV × RIVA.8B.IS × SOVEREIGN KEY × MAHAKALA PUJA ──
+  const WS_DEFAULT_CATALOG = [
+    { id: "omn", node: "OMN:MEDUSA", category: "MEDUSA Sovereign Triad", recommended: true, name: "MEDUSA Triad — ∞ OMN:MEDUSA (Infinity · 852 Hz · Violet-Gold)", chip: "Waveshare ESP32-S3-Touch-AMOLED-2.06 #2 (80:B5:4E:F2:02:B4)", display: "2.06\" 410×502 CO5300 QSPI AMOLED + ES8311 + ES7210 Dual-Mic · Vertex ∞ (852 Hz)", manifest: "/firmware/omn/manifest.json" },
+    { id: "ada", node: "ADA:MEDUSA", category: "MEDUSA Sovereign Triad", recommended: true, name: "MEDUSA Triad — * ADA:MEDUSA (Star · 432 Hz · Rose-Gold)", chip: "Waveshare ESP32-S3-Touch-AMOLED-1.8 (80:B5:4E:DB:3B:C4)", display: "1.8\" 368×448 SH8601 QSPI AMOLED + ES8311 · Vertex * (432 Hz)", manifest: "/firmware/ada/manifest.json" },
+    { id: "tdeck", node: "TDECK:AYEOS", category: "Sovereign Cyberdeck", recommended: true, name: "LilyGO T-Deck / T-Deck Plus (TDECK:AYEOS · <>)", chip: "ESP32-S3FN16R8 (16MB QIO Flash · 8MB OPI PSRAM · SX1262 LoRa · CC:BA:97:00:45:24)", display: "2.8\" 320×240 ST7789-GRAM-WAVE + QWERTY + Trackball + ES7210 Audio", manifest: "/firmware/tdeck/manifest.json" },
+    { id: "vak", node: "VAK:MEDUSA", category: "MEDUSA Sovereign Triad", recommended: false, name: "MEDUSA Triad — △ VAK:MEDUSA (Pillar · 528 Hz · Territory-Teal)", chip: "Waveshare ESP32-S3-Touch-AMOLED-2.06 #1 (80:B5:4E:F2:02:B0)", display: "2.06\" 410×502 CO5300 QSPI AMOLED · Vertex △ (528 Hz)", manifest: "/firmware/vak/manifest.json" },
+    { id: "ws-amoled-18", node: "WS:AMOLED-1.8", category: "Waveshare AMOLED", recommended: true, name: "Waveshare ESP32-S3-Touch-AMOLED-1.8", chip: "ESP32-S3R8 (8MB OPI PSRAM · 16MB Flash)", display: "1.8\" 368×448 SH8601 QSPI AMOLED + FT3168 Touch + AXP2101 PMU", manifest: "/firmware/ws-amoled-18/manifest.json" },
+    { id: "ws-amoled-206", node: "WS:AMOLED-2.06", category: "Waveshare AMOLED", recommended: true, name: "Waveshare ESP32-S3-Touch-AMOLED-2.06 (Watch / Pocket)", chip: "ESP32-S3R8 (8MB OPI PSRAM · 16MB/32MB Flash)", display: "2.06\" 410×502 CO5300 QSPI AMOLED + FT3168 Touch + RTC + IMU", manifest: "/firmware/ws-amoled-206/manifest.json" },
+    { id: "ws-amoled-143", node: "WS:AMOLED-ROUND", category: "Waveshare AMOLED", recommended: false, name: "Waveshare ESP32-S3-Touch-AMOLED-1.43 / 1.75 Round", chip: "ESP32-S3R8 (8MB PSRAM · 16MB Flash)", display: "1.43\" / 1.75\" 466×466 SH8601 Round QSPI AMOLED + CST816S Touch", manifest: "/firmware/ws-amoled-143/manifest.json" },
+    { id: "ws-lcd-169", node: "WS:LCD-TOUCH", category: "Waveshare Touch LCD", recommended: false, name: "Waveshare ESP32-S3-Touch-LCD-1.69 / 1.28 / 2.8", chip: "ESP32-S3R8 (8MB PSRAM · 16MB Flash)", display: "1.69\" 240×280 ST7789 SPI IPS LCD + CST816S Touch + QMI8658 IMU", manifest: "/firmware/ws-lcd-169/manifest.json" },
+    { id: "ws-s3-zero", node: "WS:S3-ZERO", category: "Waveshare Compact / Matrix", recommended: false, name: "Waveshare ESP32-S3-Zero / S3-Mini / S3-Matrix (8×8 RGB)", chip: "ESP32-S3FH4R2 (2MB PSRAM · 4MB Flash)", display: "Onboard WS2812B RGB LED / 8×8 RGB Matrix + USB-C Stamp", manifest: "/firmware/ws-s3-zero/manifest.json" },
+    { id: "ws-lcd-43", node: "WS:BASE-4.3", category: "Waveshare Base Station", recommended: false, name: "Waveshare ESP32-S3-Touch-LCD-4.3 / 5.0 / 7.0 Base Station", chip: "ESP32-S3-WROOM-1-N16R8 (8MB PSRAM · 16MB Flash)", display: "4.3\" / 5.0\" / 7.0\" 800×480 RGB Panel + GT911 Touch + CAN/RS485", manifest: "/firmware/ws-lcd-43/manifest.json" }
+  ];
+
+  let wsCatalog = WS_DEFAULT_CATALOG.slice();
+  function renderWsCatalog(selectedId = "omn") {
+    const grid = document.getElementById("ws-device-grid");
+    if (!grid) return;
+    grid.innerHTML = wsCatalog.map(d => {
+      const isAct = d.id === selectedId;
+      return `<div class="ws-dev-card" data-ws-id="${d.id}" style="background:${isAct ? 'rgba(0,229,201,0.12)' : 'var(--bg-elevated)'};border:1px solid ${isAct ? 'var(--wigle-wifi-5)' : 'var(--line)'};border-radius:10px;padding:11px 13px;cursor:pointer;">
+        <div style="font-size:0.65rem;color:var(--omn-purple);text-transform:uppercase;letter-spacing:0.06em;">${d.category} ${d.recommended ? '★ SOTA' : ''}</div>
+        <div style="font-size:0.82rem;font-weight:700;color:#fff;margin:3px 0;">${d.name}</div>
+        <div style="font-size:0.71rem;color:var(--dim);">${d.display}</div>
+      </div>`;
+    }).join("");
+    grid.querySelectorAll("[data-ws-id]").forEach(el => {
+      el.addEventListener("click", () => selectWsDevice(el.dataset.wsId));
+    });
+    selectWsDevice(selectedId, false);
+  }
+
+  function selectWsDevice(id, rerenderGrid = true) {
+    const d = wsCatalog.find(x => x.id === id) || wsCatalog[0];
+    if (!d) return;
+    if (rerenderGrid) renderWsCatalog(d.id);
+    const nameEl = document.getElementById("ws-sel-name");
+    const specEl = document.getElementById("ws-sel-spec");
+    const btnEl = document.getElementById("ws-esp-install-btn");
+    const dlEl = document.getElementById("ws-dl-links");
+    const cmdEl = document.getElementById("ws-esptool-cmd");
+    if (nameEl) nameEl.textContent = `${d.name} (${d.node})`;
+    if (specEl) specEl.textContent = `${d.chip} · ${d.display}`;
+    const base = `https://waveshare.8b.is/firmware/${d.id}`;
+    if (btnEl) btnEl.setAttribute("manifest", `/firmware/${d.id}/manifest.json`);
+    if (dlEl) {
+      dlEl.innerHTML = `
+        <a class="btn cyan" href="${base}/firmware.bin" download="${d.id}-firmware.bin" style="text-decoration:none;">⬇ firmware.bin (0x10000)</a>
+        <a class="btn" href="${base}/bootloader.bin" download="${d.id}-bootloader.bin" style="text-decoration:none;">⬇ bootloader.bin (0x0)</a>
+        <a class="btn" href="${base}/partitions.bin" download="${d.id}-partitions.bin" style="text-decoration:none;">⬇ partitions.bin (0x8000)</a>
+        <a class="btn" href="${base}/boot_app0.bin" download="boot_app0.bin" style="text-decoration:none;">⬇ boot_app0.bin (0xe000)</a>
+        <a class="btn gold" href="${base}/manifest.json" target="_blank" rel="noopener" style="text-decoration:none;">📄 manifest.json</a>
+      `;
+    }
+    if (cmdEl) {
+      cmdEl.textContent =
+`# [waveshare.8b.is × esp32.vaked.dev] CLI Flash for ${d.name} (${d.node})
+# Enforces the waveshare.8b.is / waveshare.8s.is 115200 baud USB-CDC invariant (--no-stub safe):
+curl -sLO ${base}/bootloader.bin && \\
+curl -sLO ${base}/partitions.bin && \\
+curl -sLO ${base}/boot_app0.bin && \\
+curl -sLO ${base}/firmware.bin && \\
+esptool.py --chip esp32s3 --baud 115200 write_flash -z \\
+  0x0 bootloader.bin 0x8000 partitions.bin 0xe000 boot_app0.bin 0x10000 firmware.bin`;
+    }
+  }
+
+  renderWsCatalog("omn");
+  const btnOpenWsTab = document.getElementById("btn-open-waveshare-tab");
+  if (btnOpenWsTab) btnOpenWsTab.addEventListener("click", () => switchTab("waveshare"));
+  if (location.hash === "#waveshare") switchTab("waveshare");
+
+  function mintSovereignTokenJs() {
+    const epoch = Math.floor(Date.now() / 1000);
+    const payload = JSON.stringify({
+      sub: "peterlodri-sec",
+      iss: "https://waveshare.8b.is",
+      surfaces: ["https://waveshare.8b.is", "https://esp32.vaked.dev", "https://riva.8b.is", "https://music.vaked.dev"],
+      triad: ["OMN:MEDUSA(80:B5:4E:F2:02:B4)", "ADA:MEDUSA(80:B5:4E:DB:3B:C4)", "TDECK:AYEOS(CC:BA:97:00:45:24)"],
+      board_token: "24f9b92620b94982b1df86ac785f28dc",
+      puja: "MAHAKALA-DIAMOND-WAY-8B-INVOCATION",
+      iat: epoch
+    });
+    const rawBytes = new TextEncoder().encode(payload);
+    const sig64 = new Uint8Array(64);
+    for (let i = 0; i < 64; i++) sig64[i] = (0x62 ^ (i * 37) ^ rawBytes[i % rawBytes.length]) & 0xff;
+    const merged = new Uint8Array(64 + rawBytes.length);
+    merged.set(sig64, 0);
+    merged.set(rawBytes, 64);
+    let bin = "";
+    for (let i = 0; i < merged.length; i++) bin += String.fromCharCode(merged[i]);
+    const b64 = btoa(bin);
+    try { localStorage.setItem("vkd_sovereign_token", b64); } catch {}
+    return { token: `Sovereign ${b64}`, epoch, boardToken: "24f9b92620b94982b1df86ac785f28dc" };
+  }
+
+  const btnProvSov = document.getElementById("btn-provision-sovereign");
+  if (btnProvSov) {
+    btnProvSov.addEventListener("click", async () => {
+      const sov = mintSovereignTokenJs();
+      const readout = document.getElementById("ws-sovereign-readout");
+      const cmds = [
+        `TIME ${sov.epoch} 32400`,
+        `HOST 127.0.0.1 8089 ${sov.boardToken}`,
+        `SHARE`,
+        `LEARN SAVE`,
+        `SYNC`
+      ];
+      if (readout) {
+        readout.textContent =
+`Authorization: ${sov.token.slice(0, 76)}... (${sov.token.length}B · GOD MODE ACTIVE)
+Board NVS Provisioned Commands:
+  > ${cmds.join("\n  > ")}`;
+      }
+      for (const c of cmds) {
+        await sendSerialCommand(c);
+      }
+    });
+  }
+
+  const btnMahakala = document.getElementById("btn-trigger-mahakala");
+  if (btnMahakala) {
+    btnMahakala.addEventListener("click", async () => {
+      await sendSerialCommand('ZONEINN|{"idx":2,"slug":"mahakala","title":"Mahakala","artist":"8b.is Studio","bpm":108,"key":"Dm9","trit":-1}');
+      await sendSerialCommand("TTS Om Shri Mahakala Ya Hum Hum Phat Karmapa Chenno");
+      await sendSerialCommand("ENTHEA|0.88|0.96|0.12|1");
+      await sendSerialCommand("SYNC");
+    });
+  }
+
+  const btnLyfjaberg = document.getElementById("btn-trigger-lyfjaberg");
+  if (btnLyfjaberg) {
+    btnLyfjaberg.addEventListener("click", async () => {
+      await sendSerialCommand('ZONEINN|{"idx":21,"slug":"wardruna-lyfjaberg","title":"Lyfjaberg (Healing-Mountain)","artist":"Wardruna","bpm":96,"key":"Dm","trit":0}');
+      await sendSerialCommand("TTS Wardruna Lyfjaberg Healing Mountain climbed with love");
+      await sendSerialCommand("RIVA");
+    });
+  }
+
+  const btnShpongle = document.getElementById("btn-trigger-shpongle");
+  if (btnShpongle) {
+    btnShpongle.addEventListener("click", async () => {
+      await sendSerialCommand('ZONEINN|{"idx":22,"slug":"shpongle-dmt","title":"Divine Moments of Truth","artist":"Shpongle","bpm":136,"key":"Fm","trit":1}');
+      await sendSerialCommand("TTS Shpongle Divine Moments of Truth Enthea Hyperbolic");
+      await sendSerialCommand("ENTHEA|0.95|0.98|0.08|2");
+    });
+  }
 })();
 </script>
 </body>

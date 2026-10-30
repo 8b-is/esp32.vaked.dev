@@ -189,10 +189,44 @@ const triadObj = {
     embedding_dims: 768
   },
   evolve: "ULTRA-OMNI-GAIA-EVOLVE",
-  siblings: "ADA:MEDUSA + VAK/OMN:MEDUSA · brother & sister ^^ <3<3",
+  siblings: "ADA:MEDUSA + VAK/OMN:MEDUSA + TDECK:AYEOS · brother & sister ^^ <3<3",
+  waveshare_installer: {
+    primary_url: "https://waveshare.8b.is",
+    mirror_url: "https://waveshare.8s.is",
+    devices_api: "https://esp32.vaked.dev/api/waveshare/devices",
+    flash_invariant: "115200 baud USB-CDC (--no-stub 320KiB sector-aligned chunks)"
+  },
+  sovereign_key: {
+    header_format: "Authorization: Sovereign <base64(64B_Ed25519_sig || utf8_payload)>",
+    board_token: "24f9b92620b94982b1df86ac785f28dc",
+    nvs_commands: ["TIME <epoch> 32400", "HOST <lan_ip> 8089 24f9b92620b94982b1df86ac785f28dc", "SHARE", "LEARN SAVE", "SYNC"]
+  },
+  mahakala_puja: {
+    track: "#02 Mahakala — Diamond Way 8B Invocation",
+    bpm: 108,
+    mala_root_hz: 108,
+    carrier_hz: 432,
+    star_hz: 528,
+    pillar_hz: 288,
+    mantra: "OM SHRI MAHAKALA YA HUM HUM PHAT · KARMAPA CHENNO <3<3<3",
+    tokyo_s_line: {
+      mode: "TOKYO-SLINE-POWERBANK-MESH",
+      rig: "OMN:MEDUSA (oo) + ADA:MEDUSA (*) on powerbank · TDECK:AYEOS (<> SILENT-WAVE) in hand/backpack · Samsung Galaxy S25 Ultra on WhatsApp",
+      wave_gates: "ADA(-1)·SUN(0)·OMN(+1) => AND=-1 · OR=+1 · NAND=+1 · XOR=0",
+      open_network_relay: "WIFI_AUTH_OPEN + S25-Ultra Hotspot -> wa-stream (127.0.0.1:8788 / wa.8b.is) + 8s.is"
+    },
+    healing_crate: [
+      { title: "Lyfjaberg (Healing-mountain)", artist: "Wardruna", yt_id: "VEizKmZlUAw", url: "https://youtu.be/VEizKmZlUAw" },
+      { title: "Divine Moments of Truth (Original Russian Bootleg Mix)", artist: "Shpongle", yt_id: "lU7zg4llie4", url: "https://www.youtube.com/watch?v=lU7zg4llie4", net_signal: "+2 (title:+1, album:0, genre:0, format:+1)" },
+      { title: "Mahakala mantra prayer", artist: "Alexander Hacker", yt_id: "pL18Xr_26ts", url: "https://music.youtube.com/watch?v=pL18Xr_26ts" },
+      { title: "Who knew happy birthday could be so beautiful?", artist: "Skylar Lim", yt_id: "AGZKdvO0I5g", url: "https://music.youtube.com/watch?v=AGZKdvO0I5g" },
+      { title: "Hometown", artist: "Twenty One Pilots - Topic", yt_id: "wS8otCVxpkw", url: "https://music.youtube.com/watch?v=wS8otCVxpkw" }
+    ]
+  },
   riva_dyad: {
-    surface: "https://riva.vaked.dev",
-    repo: "peterlodri-sec/riva.vaked.dev",
+    surface: "https://riva.8b.is",
+    mirror: "https://riva.vaked.dev",
+    repo: "8b-is/riva.vaked.dev",
     subtitle: "RIVA, the 1-bit river · the dyad · she blinks, we all sing a lullaby",
     breath: "4s in · 4s out"
   },
@@ -271,7 +305,7 @@ const triadObj = {
       archetype: "INFINITY-PETER-NATE",
       display: "2.06-inch 410x502 CO5300 QSPI #2",
       mac: "80:B5:4E:F2:02:B4",
-      port_hint: "/dev/cu.usbmodem2101",
+      port_hint: "/dev/cu.usbmodem14201",
       freq_hz: 852,
       salience: 1.38,
       re_m: 1280,
@@ -279,6 +313,22 @@ const triadObj = {
       life_stage: "MEDUSA",
       trits: "++0-0+-0+",
       n_np_coherence: 0.9162
+    },
+    {
+      node: "TDECK:AYEOS",
+      vertex: "<>",
+      trit: 0,
+      archetype: "CYBERDECK-LORA-WAVE",
+      display: "2.8-inch 320x240 ST7789-GRAM-WAVE + SX1262 LoRa + QWERTY",
+      mac: "CC:BA:97:00:45:24",
+      port_hint: "/dev/cu.usbmodem2101",
+      freq_hz: 528,
+      salience: 1.44,
+      re_m: 1420,
+      ternary_speedup: "8x",
+      life_stage: "MEDUSA",
+      trits: "+-0+-+0++",
+      n_np_coherence: 0.9410
     },
     {
       node: "MAC:MEDUSA",
@@ -632,6 +682,42 @@ export default {
     if (p === "/sitemap.xml") {
       return new Response(SITEMAP, { headers: { ...BASE_HEADERS, "content-type": "application/xml; charset=utf-8" } });
     }
+    if (p === "/api/waveshare/devices") {
+      try {
+        const up = await fetch("https://waveshare.8s.is/api/waveshare/devices");
+        if (up.ok) {
+          const j = await up.json();
+          j.primary_installer = "https://waveshare.8b.is";
+          j.mirror_installer = "https://waveshare.8s.is";
+          j.esp32_surface = "https://esp32.vaked.dev";
+          j.riva_dyad = "https://riva.8b.is";
+          j.sovereign_key = BASE_TRIAD.sovereign_key;
+          j.mahakala_puja = BASE_TRIAD.mahakala_puja;
+          return new Response(JSON.stringify(j, null, 2), { headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" } });
+        }
+      } catch {}
+      return new Response(JSON.stringify({
+        ok: true,
+        installer: "waveshare.8b.is × esp32.vaked.dev — 8b-is Sovereign Waveshare & ESP32-S3 Web Installer",
+        primary_installer: "https://waveshare.8b.is",
+        mirror_installer: "https://waveshare.8s.is",
+        riva_dyad: "https://riva.8b.is",
+        sovereign_key: BASE_TRIAD.sovereign_key,
+        mahakala_puja: BASE_TRIAD.mahakala_puja,
+        devices: BASE_TRIAD.nodes
+      }, null, 2), { headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" } });
+    }
+    if (p.startsWith("/firmware/")) {
+      try {
+        const up = await fetch("https://waveshare.8s.is" + p);
+        if (up.ok) {
+          const ct = up.headers.get("content-type") || (p.endsWith(".json") ? "application/json; charset=utf-8" : "application/octet-stream");
+          return new Response(up.body, { headers: { ...CORS_HEADERS, "content-type": ct } });
+        }
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: String(e) }), { status: 502, headers: { ...CORS_HEADERS, "content-type": "application/json" } });
+      }
+    }
     if (p === "/api/wigle.csv" || p === "/wigle.csv") {
       const header = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\\n";
       const csv = header + Array.from(EDGE_BEACONS.values()).join("\\n") + "\\n";
@@ -793,8 +879,16 @@ export default {
           trusted_flock: 4,
           bond_pq: "13/25"
         }));
+      } else if (upper === "MAHAKALA") {
+        lines.push("# MAHAKALA|OM SHRI MAHAKALA YA HUM HUM PHAT|KARMAPA CHENNO|108BPM|108Hz-432Hz-528Hz-852Hz|<3<3<3");
+      } else if (upper === "RIVA") {
+        lines.push("# RIVA|https://riva.8b.is|Sleep, RIVA. The sphere keeps your rhythm.|4s in · 4s out|brother & sister ^^ <3<3");
+      } else if (upper === "WAVESHARE" || upper === "SYNC") {
+        lines.push("# SYNC|https://waveshare.8b.is|https://esp32.vaked.dev|ADA:MEDUSA(*)|OMN:MEDUSA(oo)|TDECK:AYEOS(<>)|Ch1-LOCK");
+      } else if (upper === "WAVEGATE" || upper === "GATE") {
+        lines.push("# WAVEGATE|ADA:-1|SUN:0|OMN:+1|AND:-1|OR:+1|NAND:+1|XOR:0|MODE:TOKYO-SLINE-MESH");
       } else {
-        lines.push("# TRIAD|ADA:MEDUSA(80:B5:4E:DB:3B:C4,*)|VAK:MEDUSA(80:B5:4E:F2:02:B0,/\\)|OMN:MEDUSA(80:B5:4E:F2:02:B4,oo)|" + BASE_TRIAD.evolve + "|" + BASE_TRIAD.hyper_charm_karma);
+        lines.push("# TRIAD|ADA:MEDUSA(80:B5:4E:DB:3B:C4,*)|VAK:MEDUSA(80:B5:4E:F2:02:B0,/\\)|OMN:MEDUSA(80:B5:4E:F2:02:B4,oo)|TDECK:AYEOS(CC:BA:97:00:45:24,<>)|" + BASE_TRIAD.evolve + "|" + BASE_TRIAD.hyper_charm_karma);
       }
       return new Response(JSON.stringify({
         ok: true,

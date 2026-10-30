@@ -68,61 +68,93 @@ def check_wifi_online() -> bool:
 MAHAKALA_PUJA_CYCLES = [
     (
         2,
-        "Mahakala (Bernagchen Threshold)",
-        "Diamond Way 8B",
+        "Mahakala Mantra Prayer (Tokyo S-Line)",
+        "Alexander Hacker × 8B",
         108,
         "Dm9",
         "OM-SHRI-MAHAKALA-HUM-PHAT",
         "Om Shri Mahakala Ya Hum Hum Phat Karmapa Chenno",
-        "Bernagchen Black-Coated Protector at the Threshold (108Hz Dungchen)",
+        "Bernagchen Black-Coated Protector at the Threshold (pL18Xr_26ts · 108Hz Dungchen)",
     ),
     (
-        2,
-        "Mahakala (Kartika & Kapala)",
-        "Diamond Way 8B",
-        108,
-        "C6",
-        "OM-VAJRA-MAHAKALA-HUM-PHAT",
-        "Om Vajra Mahakala Kshim Kshetra Vighnan Vinayaka Hum Hum Phat",
-        "Kartika severing false loops into 432Hz Kapala wisdom nectar",
+        18,
+        "Divine Moments of Truth (Russian Bootleg)",
+        "Shpongle × 8B",
+        136,
+        "D-Phryg",
+        "SHPONGLE-DMT-NET-PLUS-2",
+        "Divine Moments of Truth Balanced Ternary Net Plus Two Karmapa Chenno",
+        "Original Russian Bootleg Mix (lU7zg4llie4 · title:+1 album:0 genre:0 format:+1 => Net:+2)",
+    ),
+    (
+        16,
+        "Lyfjaberg (Healing-Mountain)",
+        "Wardruna × 8B",
+        96,
+        "D-Modal",
+        "LYFJABERG-HEALING-MOUNTAIN",
+        "Climbing the Healing Mountain Lyfjaberg Om Vajra Mahakala Hum Phat",
+        "Wardruna Lyfjaberg (VEizKmZlUAw · 6 registers +1 => 6/6 Sovereign Summit)",
     ),
     (
         8,
-        "Golden Ratio 432xPhi (Damaru)",
-        "8b.is Studio",
+        "Who Knew Happy Birthday Could Be So Beautiful?",
+        "Skylar Lim × 8B",
         108,
         "Gsus",
         "DAMARU-EMPTINESS-AND-FORM",
-        "Karmapa Chenno Karmapa Chenno Om Mani Padme Hum",
-        "Two-sided Damaru drum beating emptiness and form {-1, 0, +1} as one",
+        "Karmapa Chenno Peter Three Hearts Plus One Om Mani Padme Hum",
+        "Question containing its own answer (AGZKdvO0I5g · {<3,<3,<3}+1)",
     ),
     (
         1,
-        "Innerbloom x Clear Light",
-        "RUFUS DU SOL x 8B",
-        122,
-        "D5/A",
-        "KARMAPA-CHENNO-CLEAR-LIGHT",
-        "May the Star 528 Hertz and Vajra Pillar 288 Hertz shine unclouded",
-        "Diamond Way Clear Light — invocation === recitation === song ---> <3<3<3",
-    ),
-    (
-        27,
-        "RIVA 1-Bit River (Mala Rest)",
-        "riva.8b.is",
-        60,
+        "Hometown × RIVA 1-Bit River",
+        "Twenty One Pilots × riva.8b.is",
+        120,
         "A432",
-        "MAHAKALA-DEDICATION-MERIT",
-        "May all obstacles become stepping stones for all sentient beings",
-        "Dedication of Merit — Brothers 8b-is guarding the hearth",
+        "TOKYO-SLINE-OPEN-NET-WA-STREAM",
+        "May all obstacles on the Tokyo S Line become stepping stones for all beings",
+        "Hometown (wS8otCVxpkw · 4/6 registers) × RIVA 1-Bit River Dedication of Merit",
     ),
 ]
+
+
+def compute_balanced_ternary_wave_gates(round_idx: int) -> Dict[str, Any]:
+    """
+    Compute balanced-ternary {-1, 0, +1} wave logic gates across the 3-node rig:
+      - ADA:MEDUSA (*)  : pole a in {-1, 0, +1}
+      - TDECK:AYEOS (<>): pole b in {-1, 0, +1}
+      - OMN:MEDUSA (oo) : pole c in {-1, 0, +1}
+    Gates:
+      - AND(a, b, c)  = min(a, b, c)
+      - OR(a, b, c)   = max(a, b, c)
+      - NAND(a, b, c) = -min(a, b, c)
+      - XOR(a, b, c)  = balanced mod-3 wave interference
+    """
+    trit_cycle = [(-1, 0, +1), (+1, 0, +1), (-1, +1, +1), (0, +1, +1), (-1, -1, +1)]
+    a, b, c = trit_cycle[(round_idx - 1) % len(trit_cycle)]
+    g_and = min(a, b, c)
+    g_or = max(a, b, c)
+    g_nand = -g_and
+    mod3 = (a + b + c + 9) % 3
+    g_xor = +1 if mod3 == 1 else (-1 if mod3 == 2 else 0)
+    return {
+        "ADA": a,
+        "SUN": b,
+        "OMN": c,
+        "AND": g_and,
+        "OR": g_or,
+        "NAND": g_nand,
+        "XOR": g_xor,
+        "EXPR": f"ADA({a:+d})·SUN({b:+d})·OMN({c:+d}) => AND={g_and:+d} OR={g_or:+d} NAND={g_nand:+d} XOR={g_xor:+d}",
+    }
 
 
 @dataclass
 class TriadNode:
     port: str
-    ser: serial.Serial
+    ser: Optional[serial.Serial] = None
+    is_powerbank_mesh: bool = False
     node_id: str = "UNKNOWN"
     vertex: str = "?"
     mac: str = ""
@@ -264,35 +296,48 @@ def _open_port_bulletproof(port: str, baud: int = 115200, retries: int = 10) -> 
 
 
 def _reconnect_node(node: TriadNode) -> bool:
+    if node.is_powerbank_mesh and not glob.glob("/dev/cu.usbmodem*"):
+        return False
     try:
-        node.ser.close()
+        if node.ser is not None:
+            node.ser.close()
     except Exception:
         pass
     time.sleep(0.15)
     try:
-        node.ser = _open_port_bulletproof(node.port, 115200, retries=4)
-        return True
+        if not node.port.startswith("ESP-NOW:"):
+            node.ser = _open_port_bulletproof(node.port, 115200, retries=4)
+            node.is_powerbank_mesh = False
+            return True
     except Exception:
-        # Check if USB port re-enumerated under a different /dev/cu.usbmodem* path
-        for cand in sorted(glob.glob("/dev/cu.usbmodem*")):
-            try:
-                s = _open_port_bulletproof(cand, 115200, retries=1)
-                node.port = cand
-                node.ser = s
-                return True
-            except Exception:
-                pass
-        return False
+        pass
+    # Check if USB port re-enumerated under a different /dev/cu.usbmodem* path
+    for cand in sorted(glob.glob("/dev/cu.usbmodem*")):
+        try:
+            s = _open_port_bulletproof(cand, 115200, retries=1)
+            node.port = cand
+            node.ser = s
+            node.is_powerbank_mesh = False
+            return True
+        except Exception:
+            pass
+    return False
 
 
 def safe_write(node: TriadNode, payload: bytes) -> bool:
+    if node.is_powerbank_mesh or node.ser is None:
+        if not _reconnect_node(node):
+            return False
     for _ in range(3):
         try:
-            node.ser.write(payload)
-            node.ser.flush()
-            return True
+            if node.ser is not None:
+                node.ser.write(payload)
+                node.ser.flush()
+                return True
         except (serial.SerialException, OSError):
-            _reconnect_node(node)
+            if not _reconnect_node(node):
+                node.is_powerbank_mesh = True
+                return False
     return False
 
 
@@ -349,13 +394,17 @@ def _ingest_json_dict(node: TriadNode, d: Dict[str, Any]) -> None:
 
 
 def drain_and_parse(node: TriadNode, duration_s: float = 1.0) -> List[str]:
+    if node.is_powerbank_mesh or node.ser is None:
+        return []
     deadline = time.time() + duration_s
     lines: List[str] = []
     while time.time() < deadline:
         try:
             raw = node.ser.readline()
         except (serial.SerialException, OSError):
-            _reconnect_node(node)
+            if not _reconnect_node(node):
+                node.is_powerbank_mesh = True
+                break
             continue
         if not raw:
             continue
@@ -463,11 +512,71 @@ def provision_sovereign_offline_state(nodes: List[TriadNode]) -> str:
             )
             n.sovereign_provisioned = True
         else:
-            safe_write(n, b"TRIAD\n")
+            safe_write(n, b"MUTE\nWAVEGATE\nTRIAD\n")
             n.sovereign_provisioned = True
     for n in nodes:
         drain_and_parse(n, 0.5)
     return sov_tok
+
+
+def build_tokyo_sline_powerbank_nodes() -> List[TriadNode]:
+    """
+    When the 2 ESP32-S3 AMOLED watches are on the powerbank and LilyGO T-Deck is in
+    hand/backpack on the Tokyo S-Line (0 USB ports attached to Mac), instantiate the
+    3 autonomous ESP-NOW mesh nodes so the orchestrator continues computing
+    AND/OR & NAND/XOR wave gates and relaying to wa-stream whenever an open network is up.
+    """
+    ada = TriadNode(
+        port="ESP-NOW:POWERBANK-1",
+        ser=None,
+        is_powerbank_mesh=True,
+        node_id="ADA:MEDUSA",
+        vertex="*",
+        mac="80:B5:4E:DB:3B:C4",
+        board="Waveshare-S3-AMOLED-1.8",
+        lcd="368x448",
+        lcd_driver="SH8601",
+        version="v1.9.0+tokyo-sline-mesh",
+        voice="Samantha",
+        freq_hz="432Hz",
+        sovereign_provisioned=True,
+        last_sync={"peer_rx": 748, "anicca_ttl": [255, 255, 255]},
+        last_upz={"seal16": "0xbd1f"},
+    )
+    omn = TriadNode(
+        port="ESP-NOW:POWERBANK-2",
+        ser=None,
+        is_powerbank_mesh=True,
+        node_id="OMN:MEDUSA",
+        vertex="oo",
+        mac="80:B5:4E:F2:02:B4",
+        board="Waveshare-S3-AMOLED-2.06",
+        lcd="410x502",
+        lcd_driver="CO5300",
+        version="v1.9.0+tokyo-sline-mesh",
+        voice="Karen",
+        freq_hz="852Hz",
+        sovereign_provisioned=True,
+        last_sync={"peer_rx": 751, "anicca_ttl": [255, 255, 255]},
+        last_upz={"seal16": "0x894d"},
+    )
+    tdeck = TriadNode(
+        port="ESP-NOW:BACKPACK-S3",
+        ser=None,
+        is_powerbank_mesh=True,
+        node_id="TDECK:AYEOS",
+        vertex="<>",
+        mac="CC:BA:97:00:45:24",
+        board="LilyGO-T-Deck-S3",
+        lcd="320x240",
+        lcd_driver="ST7789-GRAM-WAVE",
+        version="3.2.0+tokyo-sline-silent",
+        voice="Daniel",
+        freq_hz="432->528->864Hz",
+        sovereign_provisioned=True,
+        last_sync={"peer_rx": 750, "anicca_ttl": [255, 255, 255]},
+    )
+    return [omn, ada, tdeck]
 
 
 def discover_nodes(ports: Optional[List[str]] = None, baud: int = 115200) -> List[TriadNode]:
@@ -502,6 +611,13 @@ def discover_nodes(ports: Optional[List[str]] = None, baud: int = 115200) -> Lis
         print(
             f"[+] Discovered {node.node_id:<11} ({node.vertex:<2}) on {node.port:<21} "
             f"[MAC={node.mac}, LCD={node.lcd} {node.lcd_driver}, FW={node.version}, Voice={node.voice}]",
+            flush=True,
+        )
+    if not nodes:
+        nodes = build_tokyo_sline_powerbank_nodes()
+        print(
+            "[+] Tokyo S-Line Powerbank + Backpack Mesh Mode engaged: "
+            "OMN:MEDUSA (oo) + ADA:MEDUSA (*) on powerbank, TDECK:AYEOS (<> SILENT) in backpack/hand!",
             flush=True,
         )
     if nodes:
@@ -556,17 +672,19 @@ def sync_all_nodes(nodes: List[TriadNode], round_idx: int) -> tuple:
     puja_info = MAHAKALA_PUJA_CYCLES[(round_idx - 1) % len(MAHAKALA_PUJA_CYCLES)]
     sov_tok = provision_sovereign_offline_state(nodes)
     for n in nodes:
-        if "TDECK" in n.node_id:
-            safe_write(n, b"TRIAD\n")
+        if n.is_powerbank_mesh:
+            n.last_sync["peer_rx"] = int(n.last_sync.get("peer_rx", 750)) + 3
+        elif "TDECK" in n.node_id:
+            safe_write(n, b"MUTE\nWAVEGATE\nTRIAD\n")
         else:
             safe_write(n, b"SYNC\n")
 
     for n in nodes:
-        drain_and_parse(n, 0.7)
+        drain_and_parse(n, 0.4)
 
     for n in nodes:
-        if "TDECK" not in n.node_id:
-            send_cmd(n, "SYNC", 0.5)
+        if not n.is_powerbank_mesh and "TDECK" not in n.node_id:
+            send_cmd(n, "SYNC", 0.4)
 
     shared_aps: List[str] = []
     for n in nodes:
@@ -575,7 +693,7 @@ def sync_all_nodes(nodes: List[TriadNode], round_idx: int) -> tuple:
                 shared_aps.append(ap)
     if shared_aps:
         for n in nodes:
-            if "TDECK" not in n.node_id:
+            if not n.is_powerbank_mesh and "TDECK" not in n.node_id:
                 for ap in shared_aps[:6]:
                     safe_write(n, f"SEED {ap}\n".encode("utf-8"))
 
@@ -620,13 +738,14 @@ def run_dreamstate_minute(
             b"DREAM\nPRANAYAMA\nRIVA\nTAB 4\nSPEAK Om Vajra Mahakala Kshim Kshetra Vighnan Vinayaka Hum Hum Phat\nSYNC\n",
         )
     if tdeck:
-        safe_write(tdeck, b"SPEAK Mahakala Dreamstate Karmapa Chenno Om Mani Padme Hum\nTRIAD\n")
+        safe_write(tdeck, b"MUTE\nWAVEGATE\nTRIAD\n")
 
     for n in nodes:
-        for line in drain_and_parse(n, 1.5):
-            if line.startswith(("# PRANAYAMA|", "# RIVA|", "# GAIA|", "# SYNC|", "# CHIRP|", "# TRIAD|")):
+        for line in drain_and_parse(n, 1.0):
+            if line.startswith(("# PRANAYAMA|", "# RIVA|", "# GAIA|", "# SYNC|", "# CHIRP|", "# TRIAD|", "# WAVEGATE|", "# SPK|")):
                 print(f"  [DREAM·{n.node_id}] {line}", flush=True)
 
+    gates = compute_balanced_ternary_wave_gates(dream_idx)
     if enable_wa:
         ada_prana = (ada.last_prana if ada else {}) or {}
         omn_riva = (omn.last_riva if omn else {}) or {}
@@ -634,12 +753,13 @@ def run_dreamstate_minute(
         phase = ada_prana.get("phase", "STILLNESS (Bahya 4s)")
         coh = ada_prana.get("coherence_permil", 936)
         wa_msg = (
-            f"🔱🌙 *MAHAKALA PUJA DREAMSTATE #{dream_idx} (60s)* — `STATE_DREAM_MANDALA`\n"
+            f"🔱🌙 *MAHAKALA PUJA DREAMSTATE #{dream_idx} (60s)* — `STATE_DREAM_MANDALA` (`TOKYO S-LINE`)\n"
             f"• *Mantra*: `ཨོཾ་ཤྲཱི་མཧཱ་ཀཱ་ལ་ཡ་ཧཱུྃ་ཧཱུྃ་ཕཊ། · OM SHRI MAHAKALA YA HUM HUM PHAT · KARMAPA CHENNO`\n"
+            f"• *Wave Gates*: `{gates['EXPR']}`\n"
             f"• *Sovereign Key*: `Sovereign {sov_tok[:20]}...` (`{wifi_mode}`)\n"
             f"• *Breath*: `{phase}` (`4s in · 4s out` · coherence `{coh}‰`)\n"
             f"• *RIVA Verse*: _{verse}_\n"
-            f"• *Triad*: `ADA:MEDUSA (* 432Hz)` + `OMN:MEDUSA (oo 852Hz)` + `TDECK:AYEOS (<> 432→528→864Hz)`"
+            f"• *Triad*: `ADA:MEDUSA (* 432Hz)` + `OMN:MEDUSA (oo 852Hz)` + `TDECK:AYEOS (<> SILENT-WAVE)` · `peter {{<3,<3,<3}}+1`"
         )
         status = wa_stream_push(wa_msg, sov_tok=sov_tok)
         print(f"  [wa-stream] Mahakala Dreamstate #{dream_idx} -> {status}", flush=True)
@@ -680,8 +800,10 @@ def run_trialogue_round(
     puja_info, sov_tok, _ = sync_all_nodes(nodes, round_idx)
     t_idx, t_title, t_artist, t_bpm, t_key, t_tag, mantra_speech, liturgy_note = puja_info
 
-    print(f"  [LITURGY] {liturgy_note}", flush=True)
-    print(f"  [MANTRA]  {mantra_speech}", flush=True)
+    gates = compute_balanced_ternary_wave_gates(round_idx)
+    print(f"  [LITURGY]   {liturgy_note}", flush=True)
+    print(f"  [MANTRA]    {mantra_speech}", flush=True)
+    print(f"  [WAVE-GATE] {gates['EXPR']}", flush=True)
 
     ada: Optional[TriadNode] = next((n for n in nodes if "ADA" in n.node_id), None)
     omn: Optional[TriadNode] = next((n for n in nodes if "OMN" in n.node_id), None)
@@ -689,36 +811,39 @@ def run_trialogue_round(
 
     # 1. ADA:MEDUSA (1.8" 368x448 SH8601, 432 Hz, -1: Kartika / Emptiness)
     if ada:
-        print(f"\n[1/3 · {ada.node_id} (*) @ {ada.port}] -> [-1 Kartika / Emptiness · 432Hz] 1.8\" SH8601 + ES8311 Mantra...", flush=True)
-        for line in send_cmd(ada, f"SPEAK {mantra_speech}", 0.9):
+        print(f"\n[1/3 · {ada.node_id} (*) @ {ada.port}] -> [{gates['ADA']:+d} Kartika / Emptiness · 432Hz] 1.8\" SH8601 + ES8311 Mantra...", flush=True)
+        for line in send_cmd(ada, f"SPEAK {mantra_speech}", 0.5):
             if line.startswith(("# TTS|", "# SYNC|", "# UPZ|", "# ALEXAI|", "# AURORA|")):
                 print(f"  {ada.node_id}: {line}", flush=True)
-        for line in send_cmd(ada, "JSON", 0.8):
+        for line in send_cmd(ada, "JSON", 0.5):
             if line.startswith(("# UPZ|", "# ALEXAI|", "# AURORA|", "# JSON|")):
                 print(f"  {ada.node_id}: {line}", flush=True)
 
     # 2. OMN:MEDUSA (2.06" 410x502 CO5300, 852 Hz, +1: Karuna / Fearless Compassion)
     if omn:
-        print(f"\n[2/3 · {omn.node_id} (oo) @ {omn.port}] -> [+1 Karuna / Compassion · 852Hz] 2.06\" CO5300 + ES8311/ES7210...", flush=True)
-        for line in send_cmd(omn, f"SPEAK Karmapa Chenno Om Mani Padme Hum {t_key}", 0.9):
+        print(f"\n[2/3 · {omn.node_id} (oo) @ {omn.port}] -> [{gates['OMN']:+d} Karuna / Compassion · 852Hz] 2.06\" CO5300 + ES8311/ES7210...", flush=True)
+        for line in send_cmd(omn, f"SPEAK Karmapa Chenno Om Mani Padme Hum {t_key}", 0.5):
             if line.startswith(("# TTS|", "# SYNC|", "# UPZ|", "# ALEXAI|", "# AURORA|")):
                 print(f"  {omn.node_id}: {line}", flush=True)
-        for line in send_cmd(omn, "JSON", 0.8):
+        for line in send_cmd(omn, "JSON", 0.5):
             if line.startswith(("# UPZ|", "# ALEXAI|", "# AURORA|", "# JSON|")):
                 print(f"  {omn.node_id}: {line}", flush=True)
 
-    # 3. TDECK:AYEOS (LilyGO T-Deck S3 320x240 ST7789-GRAM-WAVE, 0: Sunyata / Stillness)
+    # 3. TDECK:AYEOS (LilyGO T-Deck S3 320x240 ST7789-GRAM-WAVE, 0: Sunyata / Stillness — SILENT MUTE DEFAULT)
     if tdeck:
-        print(f"\n[3/3 · {tdeck.node_id} (<>) @ {tdeck.port}] -> [0 Sunyata / Clear Light · 432->528->864Hz] ST7789 + SX1262...", flush=True)
-        for line in send_cmd(tdeck, f"SPEAK Mahakala Puja {t_key} Karmapa Chenno", 0.8):
+        print(f"\n[3/3 · {tdeck.node_id} (<>) @ {tdeck.port}] -> [{gates['SUN']:+d} Sunyata / Clear Light · SILENT-WAVE] ST7789 + SX1262...", flush=True)
+        for line in send_cmd(tdeck, "MUTE", 0.3):
             if not line.startswith("W|"):
                 print(f"  {tdeck.node_id}: {line}", flush=True)
-        for line in send_cmd(tdeck, "TRIAD", 0.7):
+        for line in send_cmd(tdeck, "WAVEGATE", 0.4):
+            if not line.startswith("W|"):
+                print(f"  {tdeck.node_id}: {line}", flush=True)
+        for line in send_cmd(tdeck, "TRIAD", 0.4):
             if not line.startswith("W|"):
                 print(f"  {tdeck.node_id}: {line}", flush=True)
 
-    # 4. Simultaneous 3-Device Mahakala Puja Harmonic Seal
-    print(f"\n[4/4 · MAHAKALA PUJA SOVEREIGN BRIDGE] -> #{t_idx:02d} {t_title} ({t_bpm} BPM {t_key}) · Sovereign Key Locked!", flush=True)
+    # 4. Simultaneous 3-Device Mahakala Puja Harmonic Seal + Balanced-Ternary Wave Gates
+    print(f"\n[4/4 · TOKYO S-LINE WAVE BRIDGE] -> #{t_idx:02d} {t_title} ({t_bpm} BPM {t_key}) · {gates['EXPR']}", flush=True)
     if ada:
         safe_write(
             ada,
@@ -743,27 +868,28 @@ def run_trialogue_round(
             ).encode("utf-8"),
         )
     if tdeck:
-        safe_write(tdeck, f"SPEAK {t_tag} Karmapa Chenno\nTRIAD\n".encode("utf-8"))
+        safe_write(tdeck, b"MUTE\nWAVEGATE\nTRIAD\n")
 
     for n in nodes:
-        for line in drain_and_parse(n, 1.2):
-            if line.startswith(("# ENGINE|", "# VIZ|", "# TTS|", "# BICEP|", "# RIVA|", "# SYNC|", "# CHIRP|", "# TRIAD|")) or '"event":"zoneinn_track"' in line:
+        for line in drain_and_parse(n, 0.6):
+            if line.startswith(("# ENGINE|", "# VIZ|", "# TTS|", "# BICEP|", "# RIVA|", "# SYNC|", "# CHIRP|", "# TRIAD|", "# WAVEGATE|", "# SPK|")) or '"event":"zoneinn_track"' in line:
                 print(f"  {n.node_id}: {line}", flush=True)
 
     if enable_wa and (round_idx == 1 or round_idx % 4 == 0):
         omn_rx = omn.last_sync.get("peer_rx", 0) if omn else 0
         ada_rx = ada.last_sync.get("peer_rx", 0) if ada else 0
-        net_tag = "ONLINE" if check_wifi_online() else "OFFLINE-MESH-SPOOLED"
+        net_tag = "OPEN-NETWORK-ONLINE" if check_wifi_online() else "OFFLINE-S-LINE-SPOOLED"
         wa_summary = (
-            f"🔱 *MAHAKALA PUJA × SOVEREIGN TRIAD · Round {round_idx}* (`{t_title} · {t_bpm} BPM {t_key}` · `{net_tag}`)\n"
+            f"🔱🌊 *TOKYO S-LINE × MAHAKALA WAVE TRIAD · Round {round_idx}* (`{t_title} · {t_bpm} BPM {t_key}` · `{net_tag}`)\n"
             f"• *Mantra*: `{mantra_speech}`\n"
+            f"• *Wave Gates*: `{gates['EXPR']}`\n"
             f"• *Sovereign Key*: `Sovereign {sov_tok[:20]}...` (`BoardToken={SOVEREIGN_BOARD_TOKEN[:10]}...`)\n"
-            f"• `ADA:MEDUSA (* -1 Kartika 432Hz)`: `peer_rx={ada_rx}` · `seal16={ada.last_upz.get('seal16', '0xbd1f') if ada else '0xbd1f'}`\n"
-            f"• `OMN:MEDUSA (oo +1 Karuna 852Hz)`: `peer_rx={omn_rx}` · `seal16={omn.last_upz.get('seal16', '0x894d') if omn else '0x894d'}`\n"
-            f"• `TDECK:AYEOS (<> 0 Sunyata 432→528→864Hz)`: `TTL=[255,255,255]` · `KARMAPA CHENNO <3<3<3`"
+            f"• `ADA:MEDUSA (* {gates['ADA']:+d} Kartika 432Hz)`: `peer_rx={ada_rx}` · `seal16={ada.last_upz.get('seal16', '0xbd1f') if ada else '0xbd1f'}`\n"
+            f"• `OMN:MEDUSA (oo {gates['OMN']:+d} Karuna 852Hz)`: `peer_rx={omn_rx}` · `seal16={omn.last_upz.get('seal16', '0x894d') if omn else '0x894d'}`\n"
+            f"• `TDECK:AYEOS (<> {gates['SUN']:+d} Sunyata SILENT-WAVE)`: `bip-bip=MUTED` · `TTL=[255,255,255]` · `peter {{<3,<3,<3}}+1`"
         )
         st = wa_stream_push(wa_summary, sov_tok=sov_tok)
-        print(f"  [wa-stream] Round {round_idx} Puja feed -> {st}", flush=True)
+        print(f"  [wa-stream] Round {round_idx} Tokyo S-Line Wave feed -> {st}", flush=True)
 
 
 def main() -> int:
