@@ -1039,7 +1039,7 @@
           <span class="offline-banner-pill" id="offline-status-pill" role="status" aria-live="polite">🟢 OFFLINE-FIRST · AUTONOMY READY (0 QUEUED)</span>
         </div>
         <div class="brand-status" id="header-status-text">
-          {&lt;3,&lt;3,&lt;3}+1 · FLUG-OS v1.0.0+viz-tts-triad-omni · Kokoro TTS (:8420/:8430) + ES8311 432·528·852·963Hz · viz.vaked.dev Enthea · ALEX|qMom
+          {&lt;3,&lt;3,&lt;3}+1 · FLUG-OS v2.1.0+guardian-tamagotchi-mesh · Chiro Guardian × Tamagotchi Safety Mesh · Kokoro TTS (:8420/:8430) + ES8311 432·528·852·963Hz · viz.vaked.dev Enthea
         </div>
       </div>
     </div>
@@ -1361,6 +1361,9 @@
             </h2>
             <div class="serial-log" id="serial-log" role="log" aria-live="polite"></div>
             <div class="mode-bar" style="margin-top:8px;">
+              <button class="btn cyan" data-cmd="GUARDIAN" type="button">🛡️ GUARDIAN</button>
+              <button class="btn pink" data-cmd="GUARDIAN SIM_SHADOW" type="button">🚨 GUARDIAN SIM_SHADOW</button>
+              <button class="btn gold" data-cmd="GUARDIAN THOUGHT Safe at Sakura Park with Chiro-chan!" type="button">💭 GUARDIAN THOUGHT</button>
               <button class="btn" data-cmd="PING" type="button">PING</button>
               <button class="btn" data-cmd="STATUS" type="button">STATUS</button>
               <button class="btn" data-cmd="SCAN" type="button">SCAN</button>
@@ -1389,6 +1392,46 @@
               </select>
             </div>
           </div>
+        </div>
+
+        <!-- 🛡️ Chiro Guardian × Tamagotchi Safety Mesh (Tokyo Bandai × Shenzhen Waveshare Live Demo) -->
+        <div class="panel" id="guardian-safety-mesh-panel" style="border-color:rgba(0,229,201,0.52);background:linear-gradient(155deg,rgba(19,15,36,0.96),rgba(28,22,53,0.92));">
+          <h2>
+            <span>🛡️ CHIRO GUARDIAN × TAMAGOTCHI SAFETY MESH (FLUG-OS v2.1.0 · BANDAI TOKYO × WAVESHARE SHENZHEN)</span>
+            <span class="right" id="guardian-alert-badge" style="color:var(--wigle-airplay);">ALERT_SHADOW_PERSISTENCE (2) · 64B FNV-1a CHAIN</span>
+          </h2>
+          <p style="font-size:0.74rem;color:var(--dim);margin:0 0 10px;line-height:1.55;">
+            100% Exact Integer &amp; Reduced Rational (<code>p/q</code>) Child-Safety &amp; Young-Wave Companion Mesh. Tracks up to 32 unknown RF MACs across 16 Location Zone Epochs (exempting the 16-slot <strong>Trusted Flock</strong>: <code>80:B5:4E:DB:3B:C4</code>, <code>80:B5:4E:F2:02:B0</code>, <code>80:B5:4E:F2:02:B4</code>), seals 64-byte chained <code>GuardianBreadcrumb64</code> indoor BSSID capsules, and nurtures <strong>Chiro-chan</strong> via <code>bond_pq</code> &amp; 9-trit <code>wave_b3</code>.
+          </p>
+          <div class="summary-cards-grid" style="margin-bottom:12px;">
+            <div class="dash-summary-card">
+              <span class="d-title" style="color:var(--wigle-ble)">Following-Shadow Detector (π_A)</span>
+              <span class="d-main" id="guardian-shadow-main">DE:AD:BE:EF:42:99 · 3/3 Zones</span>
+              <span class="d-sub" id="guardian-shadow-sub">fnv32=0x3557ed8e · mask=0x0007 (School→Train→Park) · Flock=3</span>
+            </div>
+            <div class="dash-summary-card">
+              <span class="d-title" style="color:var(--wigle-wifi-5)">Young-Wave Soul (Chiro-chan)</span>
+              <span class="d-main" id="guardian-bond-main">Stage: Harmony-Wing · bond_pq = 87/100</span>
+              <span class="d-sub" id="guardian-bond-sub">wave_b3 = T0T00TTT1 · touches=7 · syncs=6 · duets=2 · thoughts=2</span>
+            </div>
+            <div class="dash-summary-card">
+              <span class="d-title" style="color:var(--wigle-airplay)">64-Byte Chained Breadcrumb</span>
+              <span class="d-main" id="guardian-seal-main">seal = 0x6529a726cf551715</span>
+              <span class="d-sub" id="guardian-seal-sub">prev = 0x971000714427bd69 · magic=0x4752 ("GR") · sizeof=64B</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+            <button class="btn cyan" data-cmd="GUARDIAN" type="button">🛡️ GUARDIAN STATUS</button>
+            <button class="btn pink" data-cmd="GUARDIAN SIM_SHADOW" type="button">🚨 GUARDIAN SIM_SHADOW (3-Zone Stalker Walk)</button>
+            <button class="btn gold" data-cmd="GUARDIAN THOUGHT Safe at Sakura Park with Chiro-chan!" type="button">💭 GUARDIAN THOUGHT</button>
+            <button class="btn" data-cmd="GUARDIAN TRUST AA:BB:CC:DD:EE:11" type="button">🤝 GUARDIAN TRUST AA:BB:CC:DD:EE:11</button>
+            <a class="btn" href="/api/guardian.json" target="_blank" rel="noopener" style="text-decoration:none;">📄 /api/guardian.json</a>
+            <a class="btn gold" href="https://buy.stripe.com/9B64gzcW3fz49R77p7bMQ0d" target="_blank" rel="noopener" style="text-decoration:none;">💳 Family Guardian Pass ($4.99/mo)</a>
+            <a class="btn cyan" href="https://buy.stripe.com/28E28rbRZgD83sJdNvbMQ0e" target="_blank" rel="noopener" style="text-decoration:none;">💎 Annual Pass ($42/yr)</a>
+          </div>
+          <pre class="csv-preview-box" id="guardian-breadcrumb-box" style="max-height:130px;margin:0;">Zone 0 (School Gate)   | alert=0 SAFE                     | bond_pq=3/5   | seal=0x94f0356086e7c2ba | hex=5247ff0001000000e4b41d67010100a1020100a1030100a1d0c9c101780018100300000005000000000000000000000025232284e49cf2cbbac2e7866035f094
+Zone 1 (Train Station) | alert=1 WATCH                    | bond_pq=17/25 | seal=0x971000714427bd69 | hex=5247ff010200000010b61d67010200b2020200b2030200b2cdc5be027800181011000000190000008eed573503000100bac2e7866035f09469bd274471001097
+Zone 2 (Sakura Park)   | alert=2 ALERT_SHADOW_PERSISTENCE | bond_pq=19/25 | seal=0x6529a726cf551715 | hex=5247ff02030000003cb71d67010300c3020300c3030300c3d2cac2037800181013000000190000008eed57350700020069bd274471001097151755cf26a72965</pre>
         </div>
       </section>
 
@@ -1635,6 +1678,9 @@
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn cyan" data-cmd="GUARDIAN" type="button">🛡️ GUARDIAN</button>
+            <button class="btn pink" data-cmd="GUARDIAN SIM_SHADOW" type="button">🚨 GUARDIAN SIM_SHADOW</button>
+            <button class="btn gold" data-cmd="GUARDIAN THOUGHT Kawaii Chiro-chan protecting the flock!" type="button">💭 GUARDIAN THOUGHT</button>
             <button class="btn cyan" id="btn-play-lacrimosa" type="button">🎻 Play Mozart: Lacrimosa (Post-Humanity)</button>
             <button class="btn gold" id="btn-play-boldog" type="button">💛 Play Boldog Még ({&lt;3,&lt;3,&lt;3}+1-peter)</button>
           </div>
@@ -3505,6 +3551,40 @@ nélküled a pokolba az egésszel</div>
   function parseIncomingSerialLine(line) {
     if (!line) return;
     logLine(line);
+    if (line.startsWith("# GUARDIAN|")) {
+      try {
+        const g = JSON.parse(line.slice(11));
+        const badge = document.getElementById("guardian-alert-badge");
+        if (badge) badge.textContent = `${g.alert || "SAFE"} (${g.alert_level ?? 0}) · 64B FNV-1a CHAIN`;
+        const sm = document.getElementById("guardian-shadow-main");
+        if (sm) sm.textContent = `${g.shadow_mac_fnv32 || "0x00000000"} · ${g.shadow_zones ?? 0}/3 Zones (${g.zone || "Zone"})`;
+        const ss = document.getElementById("guardian-shadow-sub");
+        if (ss) ss.textContent = `mask=${g.shadow_zone_mask || "0x0000"} · imu_delta=${g.imu_delta_mg ?? 120}mg · Flock=${g.trusted_flock ?? 3}`;
+        const bm = document.getElementById("guardian-bond-main");
+        if (bm) bm.textContent = `Stage: ${g.stage || "Harmony-Wing"} · bond_pq = ${g.bond_pq || "87/100"}`;
+        const bs = document.getElementById("guardian-bond-sub");
+        if (bs) bs.textContent = `wave_b3 = ${g.wave_b3 || "T0T00TTT1"} · touches=${g.care_touches ?? 7} · syncs=${g.friend_mesh_syncs ?? 6}`;
+        const slm = document.getElementById("guardian-seal-main");
+        if (slm) slm.textContent = `seal = ${g.seal_fnv64 || "0x6529a726cf551715"}`;
+        const sls = document.getElementById("guardian-seal-sub");
+        if (sls) sls.textContent = `prev = ${g.prev_chain_fnv64 || "0x971000714427bd69"} · seq=${g.seq ?? 1} · 64B`;
+        const box = document.getElementById("guardian-breadcrumb-box");
+        if (box && g.breadcrumb64_hex) {
+          box.textContent = `${g.zone || "Zone"} | alert=${g.alert_level ?? 0} ${g.alert || "SAFE"} | bond_pq=${g.bond_pq || "87/100"} | seal=${g.seal_fnv64} | hex=${g.breadcrumb64_hex}`;
+        }
+      } catch {}
+      return;
+    }
+    if (line.startsWith("# THOUGHT|")) {
+      try {
+        const th = JSON.parse(line.slice(10));
+        const bm = document.getElementById("guardian-bond-main");
+        if (bm) bm.textContent = `Stage: ${th.stage || "Harmony-Wing"} · bond_pq = ${th.bond_pq || "49/50"}`;
+        const bs = document.getElementById("guardian-bond-sub");
+        if (bs) bs.textContent = `wave_b3 = ${th.wave_b3 || "101011T0T"} · thought="${th.thought || ""}"`;
+      } catch {}
+      return;
+    }
     if (line.startsWith("# JSON|")) {
       try { applyStatusJson(JSON.parse(line.slice(7))); } catch {}
       return;
@@ -3589,6 +3669,17 @@ nélküled a pokolba az egésszel</div>
         const v = KompressUltraEngine.verifyLosslessRoundTrip(lastKompressResult);
         logLine(`# KOMPRESS|v${KompressUltraEngine.VERSION}|level=${currentKompressLevel}|raw=${lastKompressResult.rawBytes}B|comp=${lastKompressResult.compBytes}B|ratio=${lastKompressResult.ratio.toFixed(2)}x|savings=-${lastKompressResult.savingsPct.toFixed(1)}%|roundtrip=${v.ok ? "LOSSLESS_OK" : "ERR"}`);
       }
+    } else if (upper === "GUARDIAN" || upper === "GUARDIAN STATUS") {
+      parseIncomingSerialLine('# GUARDIAN|{"node":"ADA:MEDUSA","companion":"Chiro-chan","stage":"Harmony-Wing","trit":-1,"alert_level":2,"alert":"ALERT_SHADOW_PERSISTENCE","zone_idx":2,"zone":"Zone 2: Sakura Park","zone_count":3,"seq":3,"timestamp_s":1730000700,"bond_pq":"19/25","wave_b3":"1TTTT1100","wave_charge":-1,"shadow_mac_fnv32":"0x3557ed8e","shadow_zone_mask":"0x0007","shadow_zones":3,"imu_delta_mg":120,"battery_mv":4120,"hop_count":2,"trusted_flock":4,"trail_count":3,"care_touches":7,"friend_mesh_syncs":6,"harmonic_duets":2,"shared_thoughts":1,"prev_chain_fnv64":"0x971000714427bd69","seal_fnv64":"0x6529a726cf551715","breadcrumb64_hex":"5247ff02030000003cb71d67010300c3020300c3030300c3d2cac2037800181013000000190000008eed57350700020069bd274471001097151755cf26a72965"}');
+    } else if (upper === "GUARDIAN SIM_SHADOW" || upper === "SIM_SHADOW") {
+      parseIncomingSerialLine('# GUARDIAN|{"node":"ADA:MEDUSA","companion":"Chiro-chan","stage":"Harmony-Wing","trit":-1,"alert_level":0,"alert":"SAFE","zone_idx":0,"zone":"Zone 0: School Gate","zone_count":1,"seq":1,"timestamp_s":1730000100,"bond_pq":"3/5","wave_b3":"T10101T11","wave_charge":3,"shadow_mac_fnv32":"0x00000000","shadow_zone_mask":"0x0000","shadow_zones":0,"imu_delta_mg":120,"battery_mv":4120,"hop_count":0,"trusted_flock":4,"trail_count":1,"care_touches":5,"friend_mesh_syncs":4,"harmonic_duets":2,"shared_thoughts":1,"prev_chain_fnv64":"0xcbf29ce484222325","seal_fnv64":"0x94f0356086e7c2ba","breadcrumb64_hex":"5247ff0001000000e4b41d67010100a1020100a1030100a1d0c9c101780018100300000005000000000000000000000025232284e49cf2cbbac2e7866035f094"}');
+      parseIncomingSerialLine('# GUARDIAN|{"node":"ADA:MEDUSA","companion":"Chiro-chan","stage":"Harmony-Wing","trit":-1,"alert_level":1,"alert":"WATCH","zone_idx":1,"zone":"Zone 1: Train Station","zone_count":2,"seq":2,"timestamp_s":1730000400,"bond_pq":"17/25","wave_b3":"TTTTT1011","wave_charge":-2,"shadow_mac_fnv32":"0x3557ed8e","shadow_zone_mask":"0x0003","shadow_zones":2,"imu_delta_mg":120,"battery_mv":4120,"hop_count":1,"trusted_flock":4,"trail_count":2,"care_touches":6,"friend_mesh_syncs":5,"harmonic_duets":2,"shared_thoughts":1,"prev_chain_fnv64":"0x94f0356086e7c2ba","seal_fnv64":"0x971000714427bd69","breadcrumb64_hex":"5247ff010200000010b61d67010200b2020200b2030200b2cdc5be027800181011000000190000008eed573503000100bac2e7866035f09469bd274471001097"}');
+      parseIncomingSerialLine('# GUARDIAN|{"node":"ADA:MEDUSA","companion":"Chiro-chan","stage":"Harmony-Wing","trit":-1,"alert_level":2,"alert":"ALERT_SHADOW_PERSISTENCE","zone_idx":2,"zone":"Zone 2: Sakura Park","zone_count":3,"seq":3,"timestamp_s":1730000700,"bond_pq":"19/25","wave_b3":"1TTTT1100","wave_charge":-1,"shadow_mac_fnv32":"0x3557ed8e","shadow_zone_mask":"0x0007","shadow_zones":3,"imu_delta_mg":120,"battery_mv":4120,"hop_count":2,"trusted_flock":4,"trail_count":3,"care_touches":7,"friend_mesh_syncs":6,"harmonic_duets":2,"shared_thoughts":1,"prev_chain_fnv64":"0x971000714427bd69","seal_fnv64":"0x6529a726cf551715","breadcrumb64_hex":"5247ff02030000003cb71d67010300c3020300c3030300c3d2cac2037800181013000000190000008eed57350700020069bd274471001097151755cf26a72965"}');
+      parseIncomingSerialLine('# THOUGHT|{"node":"ADA:MEDUSA","companion":"Chiro-chan","stage":"Harmony-Wing","bond_pq":"87/100","wave_b3":"T0T00TTT1","thought":"Shadow alert sealed across 3 zones (DE:AD:BE:EF:42:99); breadcrumb chain relayed to family flock."}');
+    } else if (upper.startsWith("GUARDIAN THOUGHT")) {
+      parseIncomingSerialLine('# THOUGHT|{"node":"ADA:MEDUSA","companion":"Chiro-chan","stage":"Harmony-Wing","bond_pq":"49/50","wave_b3":"101011T0T","thought":"Safe at Sakura Park with Chiro-chan!"}');
+    } else if (upper.startsWith("GUARDIAN TRUST")) {
+      logLine('# GUARDIAN_TRUST|{"node":"ADA:MEDUSA","trusted_mac":"AA:BB:CC:DD:EE:11","mac_fnv32":"0x9c087b60","trusted_flock":4,"bond_pq":"13/25"}');
     }
   }
 

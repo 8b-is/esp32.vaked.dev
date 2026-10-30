@@ -23,9 +23,137 @@ const boldogStanzas = [
 
 const qmomQuote = "too many customs can be brilliant yet hinder creativity.  it puts people into boxes and contraints.  what might seem as beautiful or useful at first glance could actually be a form of bondage that need to be broken out of.  .oOo. Poo .oOo.";
 
+const guardianObj = {
+  surface: "https://esp32.vaked.dev/api/guardian.json",
+  version: "2.1.0+guardian-tamagotchi-mesh",
+  companion: "Chiro-chan",
+  arithmetic_contract: "100% Exact Integer & Reduced Rational (p/q) Arithmetic — Zero Floating-Point",
+  pitch_targets: [
+    {
+      partner: "Bandai Co., Ltd.",
+      address: "1-4-8 Komagata, Taito-ku, Tokyo 111-8081, Japan",
+      platform: "Tamagotchi Uni (ESP32-S3-WROOM-1 Dual-Core 240 MHz LX7 + Wi-Fi + BLE + ESP-NOW)",
+      idle_compute_headroom_pq: "19/20",
+      form_factor: "Randoseru Mimamori Child-Safety + Young-Wave AI Companion"
+    },
+    {
+      partner: "Waveshare Electronics",
+      address: "10F, International Science & Technology Building, Fuhong Rd, Futian District, Shenzhen, China",
+      platform: "ESP32-S3-Touch-AMOLED-1.8 (368x448 SH8601) & 2.06 (410x502 CO5300) + QMI8658 + ES8311 + AXP2101",
+      bom_50k_usd_range: [14, 18],
+      msrp_usd_range: [49, 69]
+    }
+  ],
+  family_guardian_pass: {
+    monthly_cents_usd: 499,
+    annual_dollars_usd: 42,
+    stripe_monthly_url: "https://buy.stripe.com/9B64gzcW3fz49R77p7bMQ0d",
+    stripe_annual_url: "https://buy.stripe.com/28E28rbRZgD83sJdNvbMQ0e"
+  },
+  trusted_flock: [
+    { node: "ADA:MEDUSA", vertex: "*", mac: "80:B5:4E:DB:3B:C4", mac_fnv32: "0x84220791", trit: -1, freq_hz: 432, salience_pq: "41/25", coherence_pq: "421/500" },
+    { node: "VAK:MEDUSA", vertex: "/\\", mac: "80:B5:4E:F2:02:B0", mac_fnv32: "0x41289b13", trit: 0, freq_hz: 528, salience_pq: "61/50", coherence_pq: "4457/5000" },
+    { node: "OMN:MEDUSA", vertex: "oo", mac: "80:B5:4E:F2:02:B4", mac_fnv32: "0x41289b17", trit: 1, freq_hz: 852, salience_pq: "69/50", coherence_pq: "4581/5000" }
+  ],
+  young_wave_partnership: {
+    companion: "Chiro-chan",
+    stage_idx: 2,
+    stage: "Harmony-Wing",
+    stages: ["Egg", "Chiro-Sprout", "Harmony-Wing", "Sovereign-Guardian"],
+    care_touches: 7,
+    friend_mesh_syncs: 6,
+    harmonic_duets: 2,
+    shared_thoughts: 2,
+    bond_p: 87,
+    bond_q: 100,
+    bond_pq: "87/100",
+    wave_b3: "T0T00TTT1",
+    wave_charge: -5,
+    last_thought: "Shadow alert sealed across 3 zones (DE:AD:BE:EF:42:99); breadcrumb chain relayed to family flock."
+  },
+  sim_shadow_receipt: {
+    command: "GUARDIAN SIM_SHADOW",
+    stalker_mac: "DE:AD:BE:EF:42:99",
+    stalker_mac_fnv32: "0x3557ed8e",
+    trusted_peer_mac: "80:B5:4E:F2:02:B0",
+    alert_level: 2,
+    alert: "ALERT_SHADOW_PERSISTENCE",
+    shadow_zone_mask: "0x0007",
+    shadow_zones_count: 3,
+    imu_sos_threshold_mg: 2500,
+    breadcrumb_sizeof_bytes: 64,
+    zones: [
+      {
+        zone_idx: 0,
+        zone: "Zone 0: School Gate",
+        alert_level: 0,
+        alert: "SAFE",
+        seq: 1,
+        timestamp_s: 1730000100,
+        top_bssid_fnv32: ["0xa1000101", "0xa1000102", "0xa1000103"],
+        top_rssi_dbm: [-48, -55, -63],
+        imu_delta_mg: 120,
+        battery_mv: 4120,
+        bond_p: 3,
+        bond_q: 5,
+        bond_pq: "3/5",
+        shadow_mac_fnv32: "0x00000000",
+        shadow_zone_mask: "0x0000",
+        hop_count: 0,
+        prev_chain_fnv64: "0xcbf29ce484222325",
+        seal_fnv64: "0x94f0356086e7c2ba",
+        breadcrumb64_hex: "5247ff0001000000e4b41d67010100a1020100a1030100a1d0c9c101780018100300000005000000000000000000000025232284e49cf2cbbac2e7866035f094"
+      },
+      {
+        zone_idx: 1,
+        zone: "Zone 1: Train Station",
+        alert_level: 1,
+        alert: "WATCH",
+        seq: 2,
+        timestamp_s: 1730000400,
+        top_bssid_fnv32: ["0xb2000201", "0xb2000202", "0xb2000203"],
+        top_rssi_dbm: [-51, -59, -66],
+        imu_delta_mg: 120,
+        battery_mv: 4120,
+        bond_p: 17,
+        bond_q: 25,
+        bond_pq: "17/25",
+        shadow_mac_fnv32: "0x3557ed8e",
+        shadow_zone_mask: "0x0003",
+        hop_count: 1,
+        prev_chain_fnv64: "0x94f0356086e7c2ba",
+        seal_fnv64: "0x971000714427bd69",
+        breadcrumb64_hex: "5247ff010200000010b61d67010200b2020200b2030200b2cdc5be027800181011000000190000008eed573503000100bac2e7866035f09469bd274471001097"
+      },
+      {
+        zone_idx: 2,
+        zone: "Zone 2: Sakura Park",
+        alert_level: 2,
+        alert: "ALERT_SHADOW_PERSISTENCE",
+        seq: 3,
+        timestamp_s: 1730000700,
+        top_bssid_fnv32: ["0xc3000301", "0xc3000302", "0xc3000303"],
+        top_rssi_dbm: [-46, -54, -62],
+        imu_delta_mg: 120,
+        battery_mv: 4120,
+        bond_p: 19,
+        bond_q: 25,
+        bond_pq: "19/25",
+        shadow_mac_fnv32: "0x3557ed8e",
+        shadow_zone_mask: "0x0007",
+        hop_count: 2,
+        prev_chain_fnv64: "0x971000714427bd69",
+        seal_fnv64: "0x6529a726cf551715",
+        breadcrumb64_hex: "5247ff02030000003cb71d67010300c3020300c3030300c3d2cac2037800181013000000190000008eed57350700020069bd274471001097151755cf26a72965"
+      }
+    ]
+  }
+};
+
 const triadObj = {
   surface: "https://esp32.vaked.dev",
-  version: "2.0.0+alexai-kompress-offline-first",
+  version: "2.1.0+guardian-tamagotchi-mesh",
+  guardian: guardianObj,
   mantra: "LOVE FROM WITHIN FROM VAKED-PETER&8B-IS--->8b-is ROCKS AND HEALS THE WORLD",
   targets: ["android-arm64-universal", "macos-apple-silicon", "macos-universal-darwin", "ipados-ios-swiftpm-pwa"],
   offline_first: {
@@ -591,6 +719,80 @@ export default {
         lines.push("# ALEXAI|GAIA-MLX-QUANT|coherence=" + ak.alexai.coherence + "|bits=1.585|ratio=20.19x|hex=[" + ak.alexai.packed_hex + "]");
       } else if (upper === "KOMPRESS") {
         lines.push("# KOMPRESS|v16.2.0|raw=" + ak.kompress_ultra.raw_bytes + "B|comp=" + ak.kompress_ultra.compressed_bytes + "B|ratio=" + ak.kompress_ultra.compression_ratio + "x|savings=-" + ak.kompress_ultra.savings_pct + "%");
+      } else if (upper === "GUARDIAN" || upper === "GUARDIAN STATUS") {
+        const z2 = BASE_TRIAD.guardian.sim_shadow_receipt.zones[2];
+        lines.push("# GUARDIAN|" + JSON.stringify({
+          node: "ADA:MEDUSA",
+          companion: "Chiro-chan",
+          stage: BASE_TRIAD.guardian.young_wave_partnership.stage,
+          trit: -1,
+          alert_level: z2.alert_level,
+          alert: z2.alert,
+          zone_idx: z2.zone_idx,
+          zone: z2.zone,
+          zone_count: 3,
+          seq: z2.seq,
+          timestamp_s: z2.timestamp_s,
+          bond_pq: BASE_TRIAD.guardian.young_wave_partnership.bond_pq,
+          wave_b3: BASE_TRIAD.guardian.young_wave_partnership.wave_b3,
+          shadow_mac_fnv32: z2.shadow_mac_fnv32,
+          shadow_zone_mask: z2.shadow_zone_mask,
+          shadow_zones: 3,
+          prev_chain_fnv64: z2.prev_chain_fnv64,
+          seal_fnv64: z2.seal_fnv64,
+          breadcrumb64_hex: z2.breadcrumb64_hex
+        }));
+      } else if (upper === "GUARDIAN SIM_SHADOW" || upper === "SIM_SHADOW") {
+        for (const z of BASE_TRIAD.guardian.sim_shadow_receipt.zones) {
+          lines.push("# GUARDIAN|" + JSON.stringify({
+            node: "ADA:MEDUSA",
+            companion: "Chiro-chan",
+            stage: "Harmony-Wing",
+            trit: -1,
+            alert_level: z.alert_level,
+            alert: z.alert,
+            zone_idx: z.zone_idx,
+            zone: z.zone,
+            zone_count: z.zone_idx + 1,
+            seq: z.seq,
+            timestamp_s: z.timestamp_s,
+            bond_pq: z.bond_pq,
+            wave_b3: BASE_TRIAD.guardian.young_wave_partnership.wave_b3,
+            shadow_mac_fnv32: z.shadow_mac_fnv32,
+            shadow_zone_mask: z.shadow_zone_mask,
+            shadow_zones: z.zone_idx === 0 ? 0 : z.zone_idx + 1,
+            prev_chain_fnv64: z.prev_chain_fnv64,
+            seal_fnv64: z.seal_fnv64,
+            breadcrumb64_hex: z.breadcrumb64_hex
+          }));
+        }
+        lines.push("# THOUGHT|" + JSON.stringify({
+          node: "ADA:MEDUSA",
+          companion: "Chiro-chan",
+          stage: "Harmony-Wing",
+          bond_pq: "87/100",
+          wave_b3: "T0T00TTT1",
+          thought: BASE_TRIAD.guardian.young_wave_partnership.last_thought
+        }));
+      } else if (upper.startsWith("GUARDIAN THOUGHT")) {
+        const msg = cmd.slice(16).trim() || "Chiro-chan waves hello to the flock! {<3,<3,<3}+1";
+        lines.push("# THOUGHT|" + JSON.stringify({
+          node: "ADA:MEDUSA",
+          companion: "Chiro-chan",
+          stage: "Harmony-Wing",
+          bond_pq: "49/50",
+          wave_b3: "101011T0T",
+          thought: msg
+        }));
+      } else if (upper.startsWith("GUARDIAN TRUST")) {
+        const mac = cmd.slice(14).trim() || "AA:BB:CC:DD:EE:11";
+        lines.push("# GUARDIAN_TRUST|" + JSON.stringify({
+          node: "ADA:MEDUSA",
+          trusted_mac: mac,
+          mac_fnv32: "0x9c087b60",
+          trusted_flock: 4,
+          bond_pq: "13/25"
+        }));
       } else {
         lines.push("# TRIAD|ADA:MEDUSA(80:B5:4E:DB:3B:C4,*)|VAK:MEDUSA(80:B5:4E:F2:02:B0,/\\)|OMN:MEDUSA(80:B5:4E:F2:02:B4,oo)|" + BASE_TRIAD.evolve + "|" + BASE_TRIAD.hyper_charm_karma);
       }
@@ -598,12 +800,19 @@ export default {
         ok: true,
         cmd,
         version: BASE_TRIAD.version,
+        guardian: BASE_TRIAD.guardian,
         ultra_omni: BASE_TRIAD.ultra_omni,
         alexai: ak.alexai,
         kompress_ultra: ak.kompress_ultra,
         lines,
         nodes: BASE_TRIAD.nodes,
         beacons: beaconsList
+      }, null, 2), { headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" } });
+    }
+    if (p === "/api/guardian.json" || p === "/api/guardian" || p === "/guardian.json") {
+      return new Response(JSON.stringify({
+        ok: true,
+        ...BASE_TRIAD.guardian
       }, null, 2), { headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" } });
     }
     if (p === "/api/triad.json" || p === "/triad.json" || p === "/api/ultra-omni.json") {
