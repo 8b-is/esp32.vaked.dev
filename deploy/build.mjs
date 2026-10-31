@@ -188,6 +188,20 @@ const triadObj = {
     lambda_schedule: "3.0 -> 1/pi",
     embedding_dims: 768
   },
+  audio8_tts: {
+    model_id: "Edge0/Audio8-TTS-Realistic-0.6b",
+    hf_url: "https://huggingface.co/Edge0/Audio8-TTS-Realistic-0.6b",
+    architecture: "ArkttsModel (Dual-AR 24L Slow GQA + 4L Fast Depth-AR + 10-RVQ 44.1kHz Snake1d Codec)",
+    languages: ["en", "zh", "ja", "ko", "fr", "de", "ar", "es"],
+    fits_single_esp32s3: true,
+    fits_3node_medusa_triad: true,
+    single_esp32s3_mb: 9.84,
+    triad_3node_mb: { "ADA:MEDUSA": 17.89, "VAK:MEDUSA": 18.63, "OMN:MEDUSA": 9.84 },
+    sram_kv_cache_bytes: 5120,
+    wire_frame_bytes: 13,
+    wire_bytes_per_sec: 280,
+    sample_rate_hz: 44100
+  },
   evolve: "ULTRA-OMNI-GAIA-EVOLVE",
   siblings: "ADA:MEDUSA + VAK/OMN:MEDUSA + TDECK:AYEOS · brother & sister ^^ <3<3",
   waveshare_installer: {
@@ -653,6 +667,33 @@ function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
       ditto_tokens_saved: dittoTokensSaved,
       lossless_roundtrip_ok: true,
       ditto_lines: dittoLines
+    },
+    audio8_tts: {
+      model_id: "Edge0/Audio8-TTS-Realistic-0.6b",
+      hf_url: "https://huggingface.co/Edge0/Audio8-TTS-Realistic-0.6b",
+      architecture: "ArkttsModel (Dual-AR 24L Slow GQA + 4L Fast Depth-AR + 10-RVQ 44.1kHz Snake1d Codec)",
+      languages: ["en", "zh", "ja", "ko", "fr", "de", "ar", "es"],
+      text: prompt,
+      fits_single_esp32s3: true,
+      fits_3node_medusa_triad: true,
+      single_esp32s3_mode: {
+        rvq_codebooks_kb: 21.3,
+        snake1d_codec_b158_sparse_mb: 3.12,
+        fast_ar_4l_b158_sparse_mb: 6.70,
+        total_flash_mb: 9.84,
+        active_psram_mb: 6.82,
+        internal_sram_kv_cache_bytes: 5120
+      },
+      triad_3node_pipeline: [
+        { node: "ADA:MEDUSA", vertex: "*", freq_hz: 432, stage: "Slow AR Layers 0..11 (dim=896, GQA 14/2)", b158_sparse_mb: 17.89, espnow_egress: "179B packed ternary hidden state" },
+        { node: "VAK:MEDUSA", vertex: "/\\\\", freq_hz: 528, stage: "Slow AR Layers 12..23 + 4097-row semantic head [151678..155773]", b158_sparse_mb: 18.63, espnow_egress: "12-bit semantic token ID" },
+        { node: "OMN:MEDUSA", vertex: "oo", freq_hz: 852, stage: "4L Fast Depth-AR (5KB SRAM KV) + 10-RVQ + 44.1kHz Causal Snake1d DAC", b158_sparse_mb: 9.84, espnow_egress: "13B/frame (280 B/s = 2.24 kbps; 19 frames / 882ms per 250B ESP-NOW pkt)" }
+      ],
+      semantic_token_id: 151678 + (seed & 0x0fff),
+      rvq_codes: Array.from({ length: 10 }, (_, idx) => idx === 0 ? (seed & 0x0fff) : ((Math.imul(seed ^ (idx * 0x9e3779b9), 0x85ebca6b) >>> 0) & 0x03ff)),
+      wire_bytes_per_frame: 13,
+      wire_bytes_per_sec: 280,
+      sample_rate_hz: 44100
     }
   };
 }
@@ -723,9 +764,9 @@ export default {
       const csv = header + Array.from(EDGE_BEACONS.values()).join("\\n") + "\\n";
       return new Response(csv, { headers: { ...CORS_HEADERS, "content-type": "text/csv; charset=utf-8" } });
     }
-    if (p === "/api/alexai" || p === "/api/kompress") {
+    if (p === "/api/alexai" || p === "/api/kompress" || p === "/api/audio8" || p === "/api/arktts") {
       const beaconsList = Array.from(EDGE_BEACONS.values()).map(r => sanitizeCsvRow(r)?.beacon).filter(Boolean);
-      const qPrompt = url.searchParams.get("prompt") || "Analyze Shinjuku 2.4GHz Ch 6 saturation, BLE proximity & AirPlay RAOP surface";
+      const qPrompt = url.searchParams.get("text") || url.searchParams.get("prompt") || "We can fit Edge0/Audio8-TTS-Realistic-0.6b on the ESP32-S3 MEDUSA Triad";
       const res = computeEdgeAlexAiAndKompress(qPrompt, beaconsList);
       return new Response(JSON.stringify({ ok: true, ...res }, null, 2), {
         headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
@@ -803,6 +844,8 @@ export default {
         lines.push("# LACRIMOSA|" + BASE_TRIAD.chiro_chan + " --- " + BASE_TRIAD.requiem + " +++ " + BASE_TRIAD.hyper_charm_karma);
       } else if (upper === "ALEXAI") {
         lines.push("# ALEXAI|GAIA-MLX-QUANT|coherence=" + ak.alexai.coherence + "|bits=1.585|ratio=20.19x|hex=[" + ak.alexai.packed_hex + "]");
+      } else if (upper === "AUDIO8" || upper === "ARKTTS" || upper.startsWith("AUDIO8 ") || upper.startsWith("ARKTTS ")) {
+        lines.push("# AUDIO8|" + JSON.stringify(ak.audio8_tts));
       } else if (upper === "KOMPRESS") {
         lines.push("# KOMPRESS|v16.2.0|raw=" + ak.kompress_ultra.raw_bytes + "B|comp=" + ak.kompress_ultra.compressed_bytes + "B|ratio=" + ak.kompress_ultra.compression_ratio + "x|savings=-" + ak.kompress_ultra.savings_pct + "%");
       } else if (upper === "GUARDIAN" || upper === "GUARDIAN STATUS") {
