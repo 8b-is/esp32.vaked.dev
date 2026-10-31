@@ -35,7 +35,7 @@ const CORS_HEADERS = {
   ...BASE_HEADERS,
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, OPTIONS",
-  "access-control-allow-headers": "content-type, accept, user-agent"
+  "access-control-allow-headers": "content-type, accept, user-agent, authorization"
 };
 
 function extractCsvFromMultipartOrRaw(rawText) {
@@ -100,14 +100,46 @@ function sanitizeCsvRow(line) {
 function ingestCsvRows(csvText) {
   const lines = csvText.split(/\r?\n/);
   let count = 0;
+  const next = new Map(EDGE_BEACONS);
   for (const line of lines) {
     const parsed = sanitizeCsvRow(line);
     if (parsed) {
-      EDGE_BEACONS.set(parsed.mac, parsed.csvRow);
+      next.set(parsed.mac, parsed.csvRow);
+      if (next.size > 1000) throw new Error("row limit");
       count++;
     }
   }
+  EDGE_BEACONS.clear();
+  for (const [key, value] of next) EDGE_BEACONS.set(key, value);
   return count;
+}
+
+async function readBoundedBody(request, maxBytes = 65536) {
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks = [];
+  let size = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > maxBytes) {
+        await reader.cancel();
+        throw new Error("body limit");
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(bytes);
 }
 
 async function relayToDatabomb8s(csvText) {
@@ -329,11 +361,20 @@ function computeEdgeAlexAiAndKompress(promptStr, beaconsList) {
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env = {}) {
     const url = new URL(request.url);
     const p = url.pathname;
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
+    const observationRoute = ["/api/wigle.csv", "/wigle.csv", "/api/upload", "/api/v2/file/upload"].includes(p);
+    if (observationRoute && env.TELEMETRY_TOKEN) {
+      if (env.TELEMETRY_TOKEN === "DISABLED") {
+        return new Response("Observation sharing is disabled", { status: 503, headers: CORS_HEADERS });
+      }
+      if (request.headers.get("authorization") !== "Bearer " + env.TELEMETRY_TOKEN) {
+        return new Response("Unauthorized", { status: 401, headers: CORS_HEADERS });
+      }
     }
     if (p === "/sw.js") {
       return new Response(SW_JS, { headers: { ...BASE_HEADERS, "content-type": "application/javascript; charset=utf-8", "service-worker-allowed": "/" } });
@@ -408,8 +449,15 @@ export default {
           headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
         });
       }
-      UPLOAD_SEQ++;
-      const rawBody = await request.text();
+      let rawBody = "";
+      try {
+        rawBody = await readBoundedBody(request, 65536);
+      } catch {
+        return new Response(JSON.stringify({ ok: false, error: "Payload Too Large (max 65536 bytes)" }), {
+          status: 413,
+          headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
+        });
+      }
       let csvText = extractCsvFromMultipartOrRaw(rawBody);
       if (rawBody.trim().startsWith("{")) {
         try {
@@ -420,7 +468,16 @@ export default {
       if (!csvText.startsWith("WigleWifi-1.")) {
         csvText = "WigleWifi-1.4,appRelease=1.1.0,model=ESP32-S3-MEDUSA-TRIAD,release=15.0,device=esp32.vaked.dev,display=AMOLED-CoreWLAN-BLE-AirPlay,board=esp32-s3-touch-amoled,brand=8b-is\nMAC,SSID,AuthMode,FirstSeen,Channel,RSSI,CurrentLatitude,CurrentLongitude,AltitudeMeters,AccuracyMeters,Type\n" + csvText;
       }
-      const ingested = ingestCsvRows(csvText);
+      let ingested = 0;
+      try {
+        ingested = ingestCsvRows(csvText);
+      } catch {
+        return new Response(JSON.stringify({ ok: false, error: "Row capacity limit exceeded (max 1000 rows)" }), {
+          status: 413,
+          headers: { ...CORS_HEADERS, "content-type": "application/json; charset=utf-8" }
+        });
+      }
+      UPLOAD_SEQ++;
       const transId = "esp32-vaked-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + String(UPLOAD_SEQ).padStart(5, "0");
       // Priority #1: Sovereign DataBomb on 8s.is
       const databombRelay = await relayToDatabomb8s(csvText);
